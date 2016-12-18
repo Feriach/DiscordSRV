@@ -1,4 +1,4 @@
-package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit;
+package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects;
 
 import github.scarsz.discordsrv.DiscordSRV.api.DiscordSRVListener;
 import github.scarsz.discordsrv.DiscordSRV.api.events.DiscordGuildChatMessageEvent;
