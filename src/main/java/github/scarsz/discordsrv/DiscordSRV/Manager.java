@@ -143,6 +143,7 @@ public class Manager {
         // show warning if bot wasn't in any guilds
         if (jda.getGuilds().size() == 0) {
             platform.severe("The bot is not a part of any Discord guilds. Follow the installation instructions.");
+            return;
         }
 
         // check & get location info
@@ -154,6 +155,9 @@ public class Manager {
         if (mainChatChannel == null && consoleChannel == null) {
             platform.severe("Chat and console channels are both unavailable, plugin will not work properly");
             return;
+        }
+        if (mainChatChannel.getId().equals(consoleChannel.getId())) {
+            platform.severe("Main chat channel has the same channel ID as the console channel, do you seriously want to stream your console to your chat channel?");
         }
 
         // send startup message if enabled
