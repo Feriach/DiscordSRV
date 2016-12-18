@@ -26,7 +26,7 @@ import java.util.List;
 public class HerochatHook implements Listener {
 
     public HerochatHook() {
-        Manager.instance.hookedPlugins.add("herochat");
+        Manager.getInstance().getHookedPlugins().add("herochat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -35,22 +35,22 @@ public class HerochatHook implements Listener {
         if (event.getResult() != Chatter.Result.ALLOWED) return;
 
         // make sure chat channel is registered
-        if (!Manager.instance.chatChannelIsLinked(event.getChannel().getName())) return;
+        if (!Manager.getInstance().chatChannelIsLinked(event.getChannel().getName())) return;
 
         // make sure chat channel is linked to discord channel
-        if (Manager.instance.getTextChannelFromChannelName(event.getChannel().getName()) == null) return;
+        if (Manager.getInstance().getTextChannelFromChannelName(event.getChannel().getName()) == null) return;
 
         // make sure message isn't blank
         if (event.getMessage().replace(" ", "").isEmpty()) return;
 
-        //Manager.instance.processChatEvent(false, event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName());
-        Manager.instance.processEvent(new GameChatMessageEvent(event.getSender().getPlayer().getName(), event.getMessage(), event.getChannel().getName()));
+        //Manager.getInstance().processChatEvent(false, event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName());
+        Manager.getInstance().processEvent(new GameChatMessageEvent(event.getSender().getPlayer().getName(), event.getMessage(), event.getChannel().getName()));
     }
 
     public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {
         Channel chatChannel = Herochat.getChannelManager().getChannel(channelName);
         if (chatChannel == null) return; // no suitable channel found
-        chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', Manager.instance.config.getString("ChatChannelHookMessageFormat")
+        chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', Manager.getInstance().getConfig().getString("ChatChannelHookMessageFormat")
                 .replace("%channelcolor%", chatChannel.getColor().toString())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNick())

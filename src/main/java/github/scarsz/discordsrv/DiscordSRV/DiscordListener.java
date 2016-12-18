@@ -18,17 +18,17 @@ public class DiscordListener extends ListenerAdapter {
 
     @Override
     public void onGenericEvent(Event event) {
-        Manager.instance.processEvent(new DiscordGenericEvent(event));
+        Manager.getInstance().processEvent(new DiscordGenericEvent(event));
     }
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-        Manager.instance.processEvent(new DiscordGuildChatMessageEvent(event));
+        Manager.getInstance().processEvent(new DiscordGuildChatMessageEvent(event));
     }
 
     @Override
     public void onPrivateMessageReceived(PrivateMessageReceivedEvent event) {
-        Manager.instance.processEvent(new DiscordPrivateMessageChatMessageEvent(event));
+        Manager.getInstance().processEvent(new DiscordPrivateMessageChatMessageEvent(event));
     }
 
 }

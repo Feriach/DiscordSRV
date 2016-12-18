@@ -15,7 +15,7 @@ public class Lag implements Runnable {
     private static long[] ticks = new long[600];
 
     public static String getTPSString() {
-        return Manager.decimalFormat.format(getTps());
+        return Manager.getDecimalFormat().format(getTps());
     }
 
     private static double getTps() {

@@ -6,9 +6,11 @@ import github.scarsz.discordsrv.DiscordSRV.api.Priority;
 import github.scarsz.discordsrv.DiscordSRV.objects.AccountLinkManager;
 import github.scarsz.discordsrv.DiscordSRV.objects.Config;
 import github.scarsz.discordsrv.DiscordSRV.objects.PlatformType;
+import github.scarsz.discordsrv.DiscordSRV.objects.UpdateManager;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import github.scarsz.discordsrv.DiscordSRV.threads.ChannelTopicUpdater;
 import github.scarsz.discordsrv.DiscordSRV.util.DiscordUtil;
+import lombok.Getter;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -34,9 +36,10 @@ import java.util.*;
  */
 public class Manager {
 
-    public static Manager instance;
-    public Platform platform;
-    public PlatformType platformType;
+    @Getter private static Manager instance;
+    @Getter private Platform platform;
+    @Getter private PlatformType platformType;
+
     public Manager(Platform platform) {
         Manager.instance = this;
         this.platform = platform;
@@ -51,52 +54,57 @@ public class Manager {
         }
     }
 
-    public static final DecimalFormat decimalFormat = new DecimalFormat("#.#");
-    public Map<String, TextChannel> channels = new HashMap<>();
-    public Config config;
-    public List<String> hookedPlugins = new ArrayList<>();
-    public JDA jda = null;
-    public long startTime = System.currentTimeMillis();
-    public AccountLinkManager accountLinkManager;
-    public Map<String, UUID> linkingCodes = new HashMap<>();
+    @Getter private static final DecimalFormat decimalFormat = new DecimalFormat("#.#");
+    @Getter private final Map<String, TextChannel> channels = new HashMap<>();
+    @Getter private Config config;
+    @Getter private final List<String> hookedPlugins = new ArrayList<>();
+    @Getter private JDA jda = null;
+    @Getter private final long startTime = System.currentTimeMillis();
+    @Getter private AccountLinkManager accountLinkManager;
+    @Getter private final Map<String, UUID> linkingCodes = new HashMap<>();
+    @Getter private final UpdateManager updateManager = new UpdateManager();
 
-    public TextChannel chatChannel; //TODO
-    public TextChannel consoleChannel; //TODO
-    public List<DiscordSRVListener> listeners = new ArrayList<>();
-    public ChannelTopicUpdater channelTopicUpdater = new ChannelTopicUpdater();
+    @Getter private TextChannel chatChannel; //TODO
+    @Getter private TextChannel consoleChannel; //TODO
+    @Getter private List<DiscordSRVListener> listeners = new ArrayList<>();
+    @Getter private ChannelTopicUpdater channelTopicUpdater = new ChannelTopicUpdater();
 
     public void initialize() {
         // send the config File to the Config & init
         config.configFile = platform.getPluginConfigFile();
         config.initialize();
 
-        //TODO update check
+        // check for updates
+        updateManager.checkIfUpdateIsAvailable();
+
         //TODO CKC thank yous
         //TODO random phrases
 
         // shutdown JDA if it was already running (plugin reload? 🤦)
         if (jda != null) jda.shutdown(false);
 
-        // set JDA message logging
-        SimpleLog.LEVEL = SimpleLog.Level.OFF;
-        SimpleLog.addListener(new SimpleLog.LogListener() {
-            @Override
-            public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
-                switch (level) {
-                    case INFO:
-                        platform.info("[JDA] " + o);
-                        break;
-                    case WARNING:
-                        platform.warning("[JDA] " + o);
-                        break;
-                    case FATAL:
-                        platform.severe("[JDA] " + o);
-                        break;
+        // set JDA message logging if it hasn't been already
+        if (SimpleLog.LEVEL != SimpleLog.Level.OFF) {
+            SimpleLog.LEVEL = SimpleLog.Level.OFF;
+            SimpleLog.addListener(new SimpleLog.LogListener() {
+                @Override
+                public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
+                    switch (level) {
+                        case INFO:
+                            platform.info("[JDA] " + o);
+                            break;
+                        case WARNING:
+                            platform.warning("[JDA] " + o);
+                            break;
+                        case FATAL:
+                            platform.severe("[JDA] " + o);
+                            break;
+                    }
                 }
-            }
-            @Override
-            public void onError(SimpleLog simpleLog, Throwable throwable) {}
-        });
+                @Override
+                public void onError(SimpleLog simpleLog, Throwable throwable) {}
+            });
+        }
 
         // build JDA
         try {
@@ -157,9 +165,9 @@ public class Manager {
         jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
         jda.shutdown(false);
 
-        channelTopicUpdater.interrupt();
+        if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
 
-        accountLinkManager.save();
+        if (accountLinkManager != null) accountLinkManager.save();
 
         platform.info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }

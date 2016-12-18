@@ -18,7 +18,7 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        Manager.instance.processEvent(GameChatMessageEvent.fromEvent(event, null));
+        Manager.getInstance().processEvent(GameChatMessageEvent.fromEvent(event, null));
     }
 
 }

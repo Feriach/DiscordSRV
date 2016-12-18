@@ -20,7 +20,7 @@ public class DiscordGuildChatMessageEvent extends Event {
 
     public DiscordGuildChatMessageEvent(GuildMessageReceivedEvent rawEvent) {
         this.discordChannelId = rawEvent.getChannel().getId();
-        this.gameDestinationChannel = Manager.instance.getChannelNameFromTextChannel(rawEvent.getChannel());
+        this.gameDestinationChannel = Manager.getInstance().getChannelNameFromTextChannel(rawEvent.getChannel());
         this.message = rawEvent.getMessage().getRawContent();
         this.rawEvent = rawEvent;
         this.senderId = rawEvent.getAuthor().getId();
@@ -40,11 +40,6 @@ public class DiscordGuildChatMessageEvent extends Event {
     }
     public String getSenderId() {
         return senderId;
-    }
-
-    @Override
-    public void perform() {
-        super.perform();
     }
 
 }

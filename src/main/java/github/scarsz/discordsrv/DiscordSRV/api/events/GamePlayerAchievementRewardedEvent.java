@@ -43,7 +43,7 @@ public class GamePlayerAchievementRewardedEvent extends GamePlayerEvent {
         String world = null;
 
         try {
-            switch (Manager.instance.platformType) {
+            switch (Manager.getInstance().getPlatformType()) {
                 case BUKKIT:
                     Object player = event.getClass().getMethod("getEntity").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);

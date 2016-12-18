@@ -34,7 +34,7 @@ public class GameChatMessageEvent extends GamePlayerEvent {
         String message = null;
 
         try {
-            switch (Manager.instance.platformType) {
+            switch (Manager.getInstance().getPlatformType()) {
                 case BUKKIT:
                     Object player = event.getClass().getMethod("getPlayer").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);

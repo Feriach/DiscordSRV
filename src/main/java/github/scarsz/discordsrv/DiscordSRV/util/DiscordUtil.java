@@ -84,7 +84,7 @@ public class DiscordUtil {
         if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_MANAGE)) {
             String message = "I was told to purge the current channel but I don't have the `Manage Messages` permission.";
             if (DiscordUtil.checkPermission(channel, Permission.MESSAGE_WRITE)) channel.sendMessage(message).queue();
-            else Manager.instance.platform.warning(message);
+            else Manager.getInstance().getPlatform().warning(message);
             return -1;
         }
 
@@ -151,7 +151,7 @@ public class DiscordUtil {
 
         String overflow = null;
         if (message.length() > 2000) {
-            Manager.instance.platform.warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
+            Manager.getInstance().getPlatform().warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
             overflow = message.substring(2000);
             message = message.substring(0, 2000);
         }
@@ -159,7 +159,7 @@ public class DiscordUtil {
         queueMessage(channel, message, m -> {
             if (expiration > 0 && checkPermission(channel, Permission.MESSAGE_MANAGE)) {
                 try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
-                if (checkPermission(channel, Permission.MESSAGE_MANAGE)) m.deleteMessage().queue(); else Manager.instance.platform.warning("Could not delete message in channel " + channel + ", no permission to manage messages");
+                if (checkPermission(channel, Permission.MESSAGE_MANAGE)) m.deleteMessage().queue(); else Manager.getInstance().getPlatform().warning("Could not delete message in channel " + channel + ", no permission to manage messages");
             }
         });
         if (overflow != null) sendMessage(channel, overflow, expiration);
@@ -173,7 +173,7 @@ public class DiscordUtil {
     }
 
     public static Message blockMessage(TextChannel channel, String message) {
-        return blockMessage(channel, new MessageBuilder().appendString(message).build());
+        return blockMessage(channel, new MessageBuilder().append(message).build());
     }
     public static Message blockMessage(TextChannel channel, Message message) {
         final Message[] returnedMessage = {null};

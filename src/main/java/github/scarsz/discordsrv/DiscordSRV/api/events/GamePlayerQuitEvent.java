@@ -41,7 +41,7 @@ public class GamePlayerQuitEvent extends GamePlayerEvent {
         String world = null;
 
         try {
-            switch (Manager.instance.platformType) {
+            switch (Manager.getInstance().getPlatformType()) {
                 case BUKKIT:
                     Object player = event.getClass().getMethod("getPlayer").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);
@@ -64,6 +64,15 @@ public class GamePlayerQuitEvent extends GamePlayerEvent {
             e.printStackTrace();
         }
         return new GamePlayerQuitEvent(playerName, message, world);
+    }
+
+    @Override
+    public boolean perform() {
+        if (!super.perform()) return false;
+
+
+
+        return true;
     }
 
 }

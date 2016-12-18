@@ -51,6 +51,6 @@ public abstract class SpongePlatform implements Platform {
 
     @Override
     public String queryTps() {
-        return Manager.decimalFormat.format(Sponge.getServer().getTicksPerSecond());
+        return Manager.getDecimalFormat().format(Sponge.getServer().getTicksPerSecond());
     }
 }

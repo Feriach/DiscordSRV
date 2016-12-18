@@ -108,6 +108,13 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- lombok (generated getters/setters) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.10</version>
+        </dependency>
+
         <!-- snakeyaml (YML parser) -->
         <dependency>
             <groupId>org.yaml</groupId>

@@ -18,7 +18,7 @@ public class DeathListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent event) {
-        Manager.instance.processEvent(GamePlayerDeathEvent.fromEvent(event));
+        Manager.getInstance().processEvent(GamePlayerDeathEvent.fromEvent(event));
     }
 
 }

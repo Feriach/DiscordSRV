@@ -28,7 +28,7 @@ public class Config {
     public void initialize() {
         try {
             // load default config values
-            ((Map<String, Object>) yaml.load(Manager.instance.platform.getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
+            ((Map<String, Object>) yaml.load(Manager.getInstance().getPlatform().getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
             System.out.print("Default config: " + defaultConfig);
 
             // load actual config files

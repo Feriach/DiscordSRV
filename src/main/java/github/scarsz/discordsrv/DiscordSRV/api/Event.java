@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.api;
 
-import java.util.Arrays;
+import github.scarsz.discordsrv.DiscordSRV.Manager;
 
 /**
  * Made by Scarsz
@@ -11,8 +11,13 @@ import java.util.Arrays;
  */
 public abstract class Event extends Cancelable {
 
-    public void perform() {
-        System.out.println("Stack @ event perform: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+    public boolean perform() {
+        String classFromStackTrace = Thread.currentThread().getStackTrace()[2].getClassName();
+        if (!classFromStackTrace.contains(Manager.class.getName())) {
+            Manager.getInstance().getPlatform().severe("Class " + classFromStackTrace + " attempted to manually perform an event. (you're not allowed to do that)");
+            return false;
+        }
+        return true;
     }
 
 }

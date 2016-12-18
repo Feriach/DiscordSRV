@@ -23,26 +23,26 @@ public class ChannelTopicUpdater extends Thread {
     }
 
     public void run() {
-        int rate = Manager.instance.config.getInt("ChannelTopicUpdaterRateInSeconds") * 1000;
+        int rate = Manager.getInstance().getConfig().getInt("ChannelTopicUpdaterRateInSeconds") * 1000;
 
         while (!isInterrupted())
         {
             try {
-                String chatTopic = applyFormatters(Manager.instance.config.getString("ChannelTopicUpdaterChatChannelTopicFormat"));
-                String consoleTopic = applyFormatters(Manager.instance.config.getString("ChannelTopicUpdaterConsoleChannelTopicFormat"));
+                String chatTopic = applyFormatters(Manager.getInstance().getConfig().getString("ChannelTopicUpdaterChatChannelTopicFormat"));
+                String consoleTopic = applyFormatters(Manager.getInstance().getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicFormat"));
 
-                if ((Manager.instance.chatChannel == null && Manager.instance.consoleChannel == null) || (chatTopic.isEmpty() && consoleTopic.isEmpty())) interrupt();
-                if (Manager.instance.jda == null || Manager.instance.jda.getSelfUser() == null) continue;
+                if ((Manager.getInstance().getChatChannel() == null && Manager.getInstance().getConsoleChannel() == null) || (chatTopic.isEmpty() && consoleTopic.isEmpty())) interrupt();
+                if (Manager.getInstance().getJda() == null || Manager.getInstance().getJda().getSelfUser() == null) continue;
 
-                if (!chatTopic.isEmpty() && Manager.instance.chatChannel != null && !DiscordUtil.checkPermission(Manager.instance.chatChannel, Permission.MANAGE_CHANNEL))
-                    Manager.instance.platform.warning("Unable to update chat channel; no permission to manage channel");
-                if (!consoleTopic.isEmpty() && Manager.instance.consoleChannel != null && !DiscordUtil.checkPermission(Manager.instance.consoleChannel, Permission.MANAGE_CHANNEL))
-                    Manager.instance.platform.warning("Unable to update console channel; no permission to manage channel");
+                if (!chatTopic.isEmpty() && Manager.getInstance().getChatChannel() != null && !DiscordUtil.checkPermission(Manager.getInstance().getChatChannel(), Permission.MANAGE_CHANNEL))
+                    Manager.getInstance().getPlatform().warning("Unable to update chat channel; no permission to manage channel");
+                if (!consoleTopic.isEmpty() && Manager.getInstance().getConsoleChannel() != null && !DiscordUtil.checkPermission(Manager.getInstance().getConsoleChannel(), Permission.MANAGE_CHANNEL))
+                    Manager.getInstance().getPlatform().warning("Unable to update console channel; no permission to manage channel");
 
-                if (!chatTopic.isEmpty() && Manager.instance.chatChannel != null && DiscordUtil.checkPermission(Manager.instance.chatChannel, Permission.MANAGE_CHANNEL))
-                    DiscordUtil.setTextChannelTopic(Manager.instance.chatChannel, chatTopic);
-                if (!consoleTopic.isEmpty() && Manager.instance.consoleChannel != null && DiscordUtil.checkPermission(Manager.instance.chatChannel, Permission.MANAGE_CHANNEL))
-                    DiscordUtil.setTextChannelTopic(Manager.instance.consoleChannel, consoleTopic);
+                if (!chatTopic.isEmpty() && Manager.getInstance().getChatChannel() != null && DiscordUtil.checkPermission(Manager.getInstance().getChatChannel(), Permission.MANAGE_CHANNEL))
+                    DiscordUtil.setTextChannelTopic(Manager.getInstance().getChatChannel(), chatTopic);
+                if (!consoleTopic.isEmpty() && Manager.getInstance().getConsoleChannel() != null && DiscordUtil.checkPermission(Manager.getInstance().getChatChannel(), Permission.MANAGE_CHANNEL))
+                    DiscordUtil.setTextChannelTopic(Manager.getInstance().getConsoleChannel(), consoleTopic);
             } catch (NullPointerException ignored) {}
 
             try { Thread.sleep(rate); } catch (InterruptedException ignored) {}
@@ -51,17 +51,17 @@ public class ChannelTopicUpdater extends Thread {
 
     @SuppressWarnings({"SpellCheckingInspection", "ConstantConditions"})
     private String applyFormatters(String input) {
-        Map<String, String> mem = MemUtil.get();
+        final Map<String, String> mem = MemUtil.get();
 
         input = input
-                .replace("%playercount%", Integer.toString(Manager.instance.platform.queryOnlinePlayers().size()))
-                .replace("%playermax%", Integer.toString(Manager.instance.platform.queryMaxPlayers()))
+                .replace("%playercount%", Integer.toString(Manager.getInstance().getPlatform().queryOnlinePlayers().size()))
+                .replace("%playermax%", Integer.toString(Manager.getInstance().getPlatform().queryMaxPlayers()))
                 .replace("%date%", new Date().toString())
-                .replace("%totalplayers%", Integer.toString(Manager.instance.platform.queryTotalPlayers()))
-                .replace("%uptimemins%", Long.toString(TimeUnit.NANOSECONDS.toMinutes(System.nanoTime() - Manager.instance.startTime)))
-                .replace("%uptimehours%", Long.toString(TimeUnit.NANOSECONDS.toHours(System.nanoTime() - Manager.instance.startTime)))
-                .replace("%motd%", DiscordUtil.stripColor(Manager.instance.platform.queryMotd()))
-                .replace("%serverversion%", Manager.instance.platform.queryServerVersion())
+                .replace("%totalplayers%", Integer.toString(Manager.getInstance().getPlatform().queryTotalPlayers()))
+                .replace("%uptimemins%", Long.toString(TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - Manager.getInstance().getStartTime())))
+                .replace("%uptimehours%", Long.toString(TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - Manager.getInstance().getStartTime())))
+                .replace("%motd%", DiscordUtil.stripColor(Manager.getInstance().getPlatform().queryMotd()))
+                .replace("%serverversion%", Manager.getInstance().getPlatform().queryServerVersion())
                 .replace("%freememory%", mem.get("freeMB"))
                 .replace("%usedmemory%", mem.get("usedMB"))
                 .replace("%totalmemory%", mem.get("totalMB"))
@@ -70,7 +70,7 @@ public class ChannelTopicUpdater extends Thread {
                 .replace("%usedmemorygb%", mem.get("usedGB"))
                 .replace("%totalmemorygb%", mem.get("totalGB"))
                 .replace("%maxmemorygb%", mem.get("maxGB"))
-                .replace("%tps%", Manager.instance.platform.queryTps())
+                .replace("%tps%", Manager.getInstance().getPlatform().queryTps())
         ;
 
         return input;
