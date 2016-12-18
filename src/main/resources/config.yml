@@ -6,13 +6,9 @@ BotToken: "BOTTOKEN"
 
 # Channel links from game to Discord
 # syntax is Channels: {"in-game channel name": "numerical channel ID from Discord", "another in-game channel name": "another numerical channel ID from Discord"}
-# This only affects Bukkit platforms currently
-Channels: {"global": "NUMERICALCHANNELID", "whatever": "NUMERICALCHANNELID"}
-
-# Main chat channel name *from channels.json* for sending non-chat related messages like player joins, deaths, achievements, etc
-# Don't touch this unless you have a chat channel plugin
-# This only affects Bukkit platforms currently
-DiscordMainChatChannel: "global"
+# The first channel pair specified in this config option will be the "main" channel, used for sending player joins/quits/deaths/achievements/etc
+# Specifying multiple channels only affects Bukkit platforms currently
+Channels: {"global": "NUMERICALCHANNELID"}
 
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
 DiscordConsoleChannelId: "NUMERICALCHANNELID"

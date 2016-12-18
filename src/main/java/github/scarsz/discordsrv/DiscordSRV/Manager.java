@@ -58,7 +58,7 @@ public class Manager {
     }
 
     @Getter private static final DecimalFormat decimalFormat = new DecimalFormat("#.#");
-    @Getter private final Map<String, TextChannel> channels = new HashMap<>();
+    @Getter private final Map<String, TextChannel> channels = new LinkedHashMap<>(); //TODO
     @Getter private Config config;
     @Getter private Yaml yaml = new Yaml();
     @Getter private final List<String> hookedPlugins = new ArrayList<>();
@@ -146,7 +146,7 @@ public class Manager {
         }
 
         // check & get location info
-        mainChatChannel = getTextChannelFromChannelName(config.getString("DiscordMainChatChannel"));
+        mainChatChannel = new ArrayList<>(channels.values()).get(0);
         consoleChannel = jda.getTextChannelById(config.getString("DiscordConsoleChannelId"));
 
         if (mainChatChannel == null) platform.warning("Specified chat channel from channels.json could not be found (is it's name set to \"" + config.getString("DiscordMainChatChannel") + "\"?)");
