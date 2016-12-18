@@ -41,7 +41,7 @@ public class CancelationDetector<TEvent extends Event> {
         listeners.add(listener);
     }
 
-    public void removeListener(CancelListener<Event> listener) {
+    public void removeListener(CancelListener<TEvent> listener) {
         listeners.remove(listener);
     }
 
@@ -55,8 +55,7 @@ public class CancelationDetector<TEvent extends Event> {
     }
 
     private Field getSlotsField(HandlerList list) {
-        if (list == null)
-            throw new IllegalStateException("Detected a NULL handler list.");
+        if (list == null) throw new IllegalStateException("Detected a NULL handler list.");
 
         try {
             Field slotField = list.getClass().getDeclaredField("handlerslots");
@@ -149,7 +148,6 @@ public class CancelationDetector<TEvent extends Event> {
                 Field handlers = list.getClass().getDeclaredField("handlers");
                 handlers.setAccessible(true);
                 handlers.set(list, null);
-
             } catch (Exception e) {
                 throw new RuntimeException("Unable to clean up handler list.", e);
             }
@@ -189,7 +187,7 @@ public class CancelationDetector<TEvent extends Event> {
         private final RegisteredListener delegate;
 
         DelegatedRegisteredListener(RegisteredListener delegate) {
-            // These values will be ignored however'
+            // These values will be ignored however
             super(delegate.getListener(), null, delegate.getPriority(), delegate.getPlugin(), false);
             this.delegate = delegate;
         }
@@ -214,4 +212,5 @@ public class CancelationDetector<TEvent extends Event> {
             return delegate.isIgnoringCancelled();
         }
     }
+
 }
