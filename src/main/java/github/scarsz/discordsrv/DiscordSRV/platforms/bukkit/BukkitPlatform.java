@@ -4,6 +4,9 @@ import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.DeathListener;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.chat.*;
+import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects.BukkitDiscordSRVListener;
+import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects.CancelationDetector;
+import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects.Lag;
 import lombok.Getter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -11,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -101,6 +105,8 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
         |__/      |__/ \_______/   \___/  |__/     \______/ |__/      |__/ |__/ |__/      |__/     |__/ \_______/   \___/  |__/  |__/ \______/  \_______/|_______/
      */
 
+    private CancelationDetector<AsyncPlayerChatEvent> cancelationDetector = new CancelationDetector<>(AsyncPlayerChatEvent.class);
+
     @Override
     public void onEnable() {
         instance = this;
@@ -159,12 +165,23 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
             getServer().getPluginManager().registerEvents(new ChatListener(), this);
         }
 
+        // in-game death events
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
+
+        // enable reporting plugins that have canceled chat events
+        if (Manager.getInstance().getConfig().getBoolean("ReportCanceledChatEvents")) {
+            getLogger().info("Chat event cancelation detector has been enabled");
+            cancelationDetector.addListener((plugin, event) -> info(event.getClass().getName() + " cancelled by " + plugin));
+        }
     }
 
     @Override
     public void onDisable() {
+        // shutdown manager
         Manager.getInstance().shutdown();
+
+        // stop cancelation detector
+        cancelationDetector.close();
     }
 
     private boolean checkIfPluginEnabled(String pluginName) {
