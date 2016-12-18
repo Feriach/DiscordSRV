@@ -58,7 +58,7 @@ public class Manager {
     }
 
     @Getter private static final DecimalFormat decimalFormat = new DecimalFormat("#.#");
-    @Getter private final Map<String, TextChannel> channels = new LinkedHashMap<>(); //TODO
+    @Getter private final Map<String, TextChannel> channels = new LinkedHashMap<>(); //TODO loading
     @Getter private Config config;
     @Getter private Yaml yaml = new Yaml();
     @Getter private final List<String> hookedPlugins = new ArrayList<>();
