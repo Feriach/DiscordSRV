@@ -3,9 +3,7 @@ package github.scarsz.discordsrv.DiscordSRV.util;
 import github.scarsz.discordsrv.DiscordSRV.Manager;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
@@ -37,15 +35,13 @@ public class DebugHandler {
             info.add("");
         }
 
-        info.add("Server name: " + ChatColor.stripColor(Bukkit.getServerName()));
-        info.add("Server MOTD: " + ChatColor.stripColor(Bukkit.getMotd()));
-        info.add("Server players: " + Bukkit.getOnlinePlayers().size() + "/" + Bukkit.getMaxPlayers());
+        info.add("Server MOTD: " + DiscordUtil.stripColor(Manager.getInstance().getPlatform().queryMotd()));
+        info.add("Server players: " + Manager.getInstance().getPlatform().queryOnlinePlayers().size() + "/" + Manager.getInstance().getPlatform().queryMaxPlayers());
         info.add("Server plugins: " + plugins);
         info.add("");
         info.add("Config version: " + Manager.getInstance().getConfig().getString("ConfigVersion"));
         info.add("Plugin version: " + Manager.getVersion());
-        info.add("Version: " + Bukkit.getVersion());
-        info.add("Bukkit version: " + Bukkit.getBukkitVersion());
+        info.add("Version: " + Manager.getInstance().getPlatform().queryServerVersion());
         info.add("");
 
         // system properties
