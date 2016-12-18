@@ -1,5 +1,8 @@
 package github.scarsz.discordsrv.DiscordSRV.api;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Made by Scarsz
  *
@@ -9,22 +12,10 @@ package github.scarsz.discordsrv.DiscordSRV.api;
  */
 public abstract class Cancelable {
 
-    private boolean canceled = false;
-
     /**
-     * Check if the event is canceled
+     * @param canceled whether or not the event should be canceled
      * @return whether or not the event is canceled
      */
-    public boolean isCanceled() {
-        return canceled;
-    }
-
-    /**
-     * Set the current event to be canceled. If it is unable to be canceled, a RuntimeException will be thrown.
-     * @param canceled whether or not the event should be canceled
-     */
-    public void setCanceled(boolean canceled) {
-        this.canceled = canceled;
-    }
+    @Getter @Setter private boolean canceled = false;
 
 }

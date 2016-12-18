@@ -21,8 +21,10 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
@@ -41,7 +43,7 @@ public class Manager {
     @Getter private PlatformType platformType;
 
     public Manager(Platform platform) {
-        Manager.instance = this;
+        instance = this;
         this.platform = platform;
         config = new Config();
 
@@ -57,14 +59,15 @@ public class Manager {
     @Getter private static final DecimalFormat decimalFormat = new DecimalFormat("#.#");
     @Getter private final Map<String, TextChannel> channels = new HashMap<>();
     @Getter private Config config;
+    @Getter private Yaml yaml = new Yaml();
     @Getter private final List<String> hookedPlugins = new ArrayList<>();
     @Getter private JDA jda = null;
     @Getter private final long startTime = System.currentTimeMillis();
-    @Getter private AccountLinkManager accountLinkManager;
+    @Getter private AccountLinkManager accountLinkManager = new AccountLinkManager(new File(platform.getPluginConfigFile().getParentFile(), "accounts.yml"));
     @Getter private final Map<String, UUID> linkingCodes = new HashMap<>();
     @Getter private final UpdateManager updateManager = new UpdateManager();
 
-    @Getter private TextChannel chatChannel; //TODO
+    @Getter private TextChannel mainChatChannel; //TODO
     @Getter private TextChannel consoleChannel; //TODO
     @Getter private List<DiscordSRVListener> listeners = new ArrayList<>();
     @Getter private ChannelTopicUpdater channelTopicUpdater = new ChannelTopicUpdater();
@@ -125,14 +128,6 @@ public class Manager {
             e.printStackTrace();
         }
 
-        // start channel topic updater if not already
-        if (channelTopicUpdater.getState() == Thread.State.NEW) channelTopicUpdater.start();
-        else {
-            if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
-            channelTopicUpdater = new ChannelTopicUpdater();
-            channelTopicUpdater.start();
-        }
-
         // print the things the bot can see
         for (Guild guild : jda.getGuilds()) {
             platform.info("Found guild " + guild);
@@ -141,21 +136,32 @@ public class Manager {
             }
         }
 
+        // show warning if bot wasn't in any guilds
+        if (jda.getGuilds().size() == 0) {
+            platform.severe("The bot is not a part of any Discord guilds. Follow the installation instructions.");
+        }
+
         // check & get location info
-        chatChannel = getTextChannelFromChannelName(config.getString("DiscordMainChatChannel"));
+        mainChatChannel = getTextChannelFromChannelName(config.getString("DiscordMainChatChannel"));
         consoleChannel = jda.getTextChannelById(config.getString("DiscordConsoleChannelId"));
 
-        if (chatChannel == null) platform.warning("Specified chat channel from channels.json could not be found (is it's name set to \"" + config.getString("DiscordMainChatChannel") + "\"?)");
+        if (mainChatChannel == null) platform.warning("Specified chat channel from channels.json could not be found (is it's name set to \"" + config.getString("DiscordMainChatChannel") + "\"?)");
         if (consoleChannel == null) platform.warning("Specified console channel from config could not be found");
-        if (chatChannel == null && consoleChannel == null) {
+        if (mainChatChannel == null && consoleChannel == null) {
             platform.severe("Chat and console channels are both unavailable, plugin will not work properly");
             return;
         }
 
         // send startup message if enabled
-        if (config.getBoolean("DiscordChatChannelServerStartupMessageEnabled")) DiscordUtil.sendMessage(chatChannel, config.getString("DiscordChatChannelServerStartupMessage"));
+        if (config.getBoolean("DiscordChatChannelServerStartupMessageEnabled")) DiscordUtil.sendMessage(mainChatChannel, config.getString("DiscordChatChannelServerStartupMessage"));
 
-
+        // start channel topic updater if not already
+        if (channelTopicUpdater != null && channelTopicUpdater.getState() == Thread.State.NEW) channelTopicUpdater.start();
+        else {
+            if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
+            channelTopicUpdater = new ChannelTopicUpdater();
+            channelTopicUpdater.start();
+        }
     }
 
     public void shutdown() {

@@ -4,6 +4,7 @@ import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.DeathListener;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.chat.*;
+import lombok.Getter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -28,8 +29,7 @@ import java.util.stream.Collectors;
  */
 public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
 
-    public Manager manager;
-    public static BukkitPlatform instance = null;
+    @Getter private static BukkitPlatform instance = null;
 
     /*
          /$$$$$$             /$$                          /$$$$$$                                    /$$      /$$             /$$     /$$                       /$$
@@ -120,9 +120,9 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
             e.printStackTrace();
         }
 
-        manager = new Manager(this);
-        manager.initialize();
-        manager.addListener(new BukkitDiscordSRVListener());
+        new Manager(this);
+        Manager.getInstance().initialize();
+        Manager.getInstance().addListener(new BukkitDiscordSRVListener());
 
         // clear past tasks in scheduler if any
         Bukkit.getServer().getScheduler().cancelTasks(this);
@@ -156,7 +156,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
 
     @Override
     public void onDisable() {
-        manager.shutdown();
+        Manager.getInstance().shutdown();
     }
 
     private boolean checkIfPluginEnabled(String pluginName) {

@@ -34,7 +34,7 @@ public class AchievementListener implements Listener {
         for (String s : event.getAchievement().toString().toLowerCase().split("_")) achievementNameParts.add(s.substring(0, 1).toUpperCase() + s.substring(1));
         String achievementName = String.join(" ", achievementNameParts);
 
-        DiscordUtil.sendMessage(Manager.getInstance().getChatChannel(), ChatColor.stripColor(Manager.getInstance().getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
+        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), ChatColor.stripColor(Manager.getInstance().getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
                 .replace("%username%", event.getPlayer().getName())
                 .replace("%displayname%", event.getPlayer().getDisplayName())
                 .replace("%world%", event.getPlayer().getWorld().getName())

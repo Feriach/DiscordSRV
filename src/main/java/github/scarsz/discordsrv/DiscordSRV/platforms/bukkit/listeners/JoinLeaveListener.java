@@ -44,7 +44,7 @@ public class JoinLeaveListener implements Listener {
         playerStatusIsOnline.put(event.getPlayer().getUniqueId(), true);
 
         // Player doesn't have silent join permission, send join message
-        DiscordUtil.sendMessage(Manager.getInstance().getChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerJoinMessageFormat")
+        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerJoinMessageFormat")
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                 .replace("%displayname%", ChatColor.stripColor(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
         );
@@ -64,7 +64,7 @@ public class JoinLeaveListener implements Listener {
         playerStatusIsOnline.remove(event.getPlayer().getUniqueId());
 
         // Player doesn't have silent quit, show quit message
-        DiscordUtil.sendMessage(Manager.getInstance().getChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerLeaveMessageFormat")
+        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerLeaveMessageFormat")
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                 .replace("%displayname%", ChatColor.stripColor(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
         );
@@ -85,7 +85,7 @@ public class JoinLeaveListener implements Listener {
             playerStatusIsOnline.put(event.getPlayer().getUniqueId(), true);
 
             // Send fake join message
-            DiscordUtil.sendMessage(Manager.getInstance().getChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerJoinMessageFormat")
+            DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerJoinMessageFormat")
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                     .replace("%displayname%", ChatColor.stripColor(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
             );
@@ -103,7 +103,7 @@ public class JoinLeaveListener implements Listener {
             playerStatusIsOnline.put(event.getPlayer().getUniqueId(), false);
 
             // Send fake quit message
-            DiscordUtil.sendMessage(Manager.getInstance().getChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerLeaveMessageFormat")
+            DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerLeaveMessageFormat")
                     .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer().getName()))
                     .replace("%displayname%", ChatColor.stripColor(DiscordUtil.escapeMarkdown(event.getPlayer().getDisplayName())))
             );

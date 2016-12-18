@@ -2,7 +2,6 @@ package github.scarsz.discordsrv.DiscordSRV.objects;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
 import org.apache.commons.io.FileUtils;
-import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +19,6 @@ import java.util.Map;
 @SuppressWarnings({"unused", "unchecked"})
 public class Config {
 
-    private final Yaml yaml = new Yaml();
     private final Map<String, Object> config = new HashMap<>();
     private final Map<String, Object> defaultConfig = new HashMap<>();
     public File configFile = null;
@@ -28,11 +26,11 @@ public class Config {
     public void initialize() {
         try {
             // load default config values
-            ((Map<String, Object>) yaml.load(Manager.getInstance().getPlatform().getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
+            ((Map<String, Object>) Manager.getInstance().getYaml().load(Manager.getInstance().getPlatform().getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
             System.out.print("Default config: " + defaultConfig);
 
             // load actual config files
-            ((Map<String, Object>) yaml.load(FileUtils.readFileToString(configFile, Charset.defaultCharset()))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
+            ((Map<String, Object>) Manager.getInstance().getYaml().load(FileUtils.readFileToString(configFile, Charset.defaultCharset()))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,7 +41,7 @@ public class Config {
         if (configFile == null) throw new NullPointerException("Config file is null. Can't save.");
         try {
             //TODO properly(?) save
-            FileUtils.writeStringToFile(configFile, yaml.dump(config), Charset.defaultCharset());
+            FileUtils.writeStringToFile(configFile, Manager.getInstance().getYaml().dump(config), Charset.defaultCharset());
         } catch (IOException e) {
             e.printStackTrace();
         }

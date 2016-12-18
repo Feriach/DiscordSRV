@@ -25,23 +25,27 @@ public class ChannelTopicUpdater extends Thread {
     public void run() {
         int rate = Manager.getInstance().getConfig().getInt("ChannelTopicUpdaterRateInSeconds") * 1000;
 
+        // make sure rate isn't less than every second because of rate limitations
+        // even then, a channel topic update /every second/ is still pushing it
+        if (rate < 1000) rate = 1000;
+
         while (!isInterrupted())
         {
             try {
                 String chatTopic = applyFormatters(Manager.getInstance().getConfig().getString("ChannelTopicUpdaterChatChannelTopicFormat"));
                 String consoleTopic = applyFormatters(Manager.getInstance().getConfig().getString("ChannelTopicUpdaterConsoleChannelTopicFormat"));
 
-                if ((Manager.getInstance().getChatChannel() == null && Manager.getInstance().getConsoleChannel() == null) || (chatTopic.isEmpty() && consoleTopic.isEmpty())) interrupt();
+                if ((Manager.getInstance().getMainChatChannel() == null && Manager.getInstance().getConsoleChannel() == null) || (chatTopic.isEmpty() && consoleTopic.isEmpty())) interrupt();
                 if (Manager.getInstance().getJda() == null || Manager.getInstance().getJda().getSelfUser() == null) continue;
 
-                if (!chatTopic.isEmpty() && Manager.getInstance().getChatChannel() != null && !DiscordUtil.checkPermission(Manager.getInstance().getChatChannel(), Permission.MANAGE_CHANNEL))
+                if (!chatTopic.isEmpty() && Manager.getInstance().getMainChatChannel() != null && !DiscordUtil.checkPermission(Manager.getInstance().getMainChatChannel(), Permission.MANAGE_CHANNEL))
                     Manager.getInstance().getPlatform().warning("Unable to update chat channel; no permission to manage channel");
                 if (!consoleTopic.isEmpty() && Manager.getInstance().getConsoleChannel() != null && !DiscordUtil.checkPermission(Manager.getInstance().getConsoleChannel(), Permission.MANAGE_CHANNEL))
                     Manager.getInstance().getPlatform().warning("Unable to update console channel; no permission to manage channel");
 
-                if (!chatTopic.isEmpty() && Manager.getInstance().getChatChannel() != null && DiscordUtil.checkPermission(Manager.getInstance().getChatChannel(), Permission.MANAGE_CHANNEL))
-                    DiscordUtil.setTextChannelTopic(Manager.getInstance().getChatChannel(), chatTopic);
-                if (!consoleTopic.isEmpty() && Manager.getInstance().getConsoleChannel() != null && DiscordUtil.checkPermission(Manager.getInstance().getChatChannel(), Permission.MANAGE_CHANNEL))
+                if (!chatTopic.isEmpty() && Manager.getInstance().getMainChatChannel() != null && DiscordUtil.checkPermission(Manager.getInstance().getMainChatChannel(), Permission.MANAGE_CHANNEL))
+                    DiscordUtil.setTextChannelTopic(Manager.getInstance().getMainChatChannel(), chatTopic);
+                if (!consoleTopic.isEmpty() && Manager.getInstance().getConsoleChannel() != null && DiscordUtil.checkPermission(Manager.getInstance().getMainChatChannel(), Permission.MANAGE_CHANNEL))
                     DiscordUtil.setTextChannelTopic(Manager.getInstance().getConsoleChannel(), consoleTopic);
             } catch (NullPointerException ignored) {}
 
