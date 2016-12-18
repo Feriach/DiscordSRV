@@ -155,7 +155,7 @@ public class DebugHandler {
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) sb.append(inputLine);
                 in.close();
-                return "http://hastebin.com/" + sb.toString().split("\"")[3];
+                return "http://hastebin.com/" + sb.toString().split("\"")[3] + ".java";
             } catch (IOException e) {
                 throw new RuntimeException(e.getMessage());
             }
