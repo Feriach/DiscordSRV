@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.DiscordSRV.api.events;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.api.GamePlayerEvent;
+import lombok.Getter;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -13,15 +14,8 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class GameChatMessageEvent extends GamePlayerEvent {
 
-    private final String message;
-    public final String getMessage() {
-        return message;
-    }
-
-    private final String channel;
-    public final String getChannel() {
-        return channel;
-    }
+    @Getter private final String message;
+    @Getter private final String channel;
 
     public GameChatMessageEvent(String playerName, String message, String channel) {
         setPlayer(playerName);

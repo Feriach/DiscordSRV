@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.DiscordSRV.api.events;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.api.GamePlayerEvent;
+import lombok.Getter;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -13,20 +14,9 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class GamePlayerJoinEvent extends GamePlayerEvent {
 
-    private final String playerName;
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    private final String message;
-    public String getMessage() {
-        return message;
-    }
-
-    private final String world;
-    public String getWorld() {
-        return world;
-    }
+    @Getter private final String playerName;
+    @Getter private final String message;
+    @Getter private final String world;
 
     public GamePlayerJoinEvent(String playerName, String message, String world) {
         this.playerName = playerName;
