@@ -39,6 +39,7 @@ import java.util.*;
 public class Manager {
 
     @Getter private static Manager instance;
+    @Getter private static String version = "13.0-SNAPSHOT";
     @Getter private Platform platform;
     @Getter private PlatformType platformType;
 
@@ -66,6 +67,9 @@ public class Manager {
     @Getter private AccountLinkManager accountLinkManager = new AccountLinkManager(new File(platform.getPluginConfigFile().getParentFile(), "accounts.yml"));
     @Getter private final Map<String, UUID> linkingCodes = new HashMap<>();
     @Getter private final UpdateManager updateManager = new UpdateManager();
+    @Getter private final List<String> randomPhrases = new ArrayList<>();
+    @Getter private final List<UUID> unsubscribedPlayers = new ArrayList<>();
+    @Getter private final Map<String, String> colors = new HashMap<>();
 
     @Getter private TextChannel mainChatChannel; //TODO
     @Getter private TextChannel consoleChannel; //TODO

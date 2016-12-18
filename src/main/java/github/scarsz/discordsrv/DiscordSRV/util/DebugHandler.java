@@ -44,7 +44,7 @@ public class DebugHandler {
 
         // system properties
         info.add("System properties:");
-        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> info.add(key + "= " + value));
+        ManagementFactory.getRuntimeMXBean().getSystemProperties().forEach((key, value) -> info.add("\t" + key + "= " + value));
         info.add("");
 
         // total number of processors or cores available to the JVM

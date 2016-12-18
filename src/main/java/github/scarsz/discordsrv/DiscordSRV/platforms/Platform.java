@@ -73,6 +73,11 @@ public interface Platform {
     void debug(String message);
 
     /**
+     * Query for the platform's enabled addons
+     * @return alphabetical list of enabled addon names & versions
+     */
+    List<String> queryAddons();
+    /**
      * Query for the platform's maximum player count
      * @return integer representing the platform's maximum player count
      */

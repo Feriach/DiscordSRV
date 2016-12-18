@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Made by Scarsz
@@ -53,6 +54,9 @@ public class Config {
 
     public boolean getBoolean(String key) {
         return (boolean) config.getOrDefault(key, defaultConfig.get(key));
+    }
+    public Set<Map.Entry<String, Object>> getEntrySet() {
+        return config.entrySet();
     }
     public int getInt(String key) {
         return (int) config.getOrDefault(key, defaultConfig.get(key));

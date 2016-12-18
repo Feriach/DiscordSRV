@@ -17,6 +17,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -61,6 +63,12 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
         getLogger().info("DEBUG | " + message);
     }
 
+    public List<String> queryAddons() {
+        List<String> plugins = new ArrayList<>();
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) plugins.add(plugin.toString());
+        Collections.sort(plugins);
+        return plugins;
+    }
     public int queryMaxPlayers() {
         return Bukkit.getMaxPlayers();
     }
