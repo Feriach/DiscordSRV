@@ -93,6 +93,12 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
     public int queryTotalPlayers() {
         return Bukkit.getWorlds().size() != 0 ? new File(Bukkit.getWorlds().get(0).getWorldFolder().getAbsolutePath(), "/playerdata").listFiles(f -> f.getName().endsWith(".dat")).length : 0;
     }
+    public void runCommand(String command) {
+        Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command));
+    }
+    public String transformUuidToPlayerName(String uuid) {
+        return Bukkit.getPlayer(uuid).getName();
+    }
 
     /*
          /$$$$$$$  /$$             /$$      /$$$$$$

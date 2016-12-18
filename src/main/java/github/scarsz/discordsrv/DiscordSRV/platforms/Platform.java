@@ -108,4 +108,17 @@ public interface Platform {
      */
     String queryTps();
 
+    /**
+     * Run the given command at the platform's console
+     * @param replace
+     */
+    void runCommand(String replace);
+
+    /**
+     * Turn the given uuid into the corresponding player's name
+     * @param uuid
+     * @return
+     */
+    String transformUuidToPlayerName(String uuid);
+
 }

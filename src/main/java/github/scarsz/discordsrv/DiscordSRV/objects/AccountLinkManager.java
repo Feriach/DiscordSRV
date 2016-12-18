@@ -65,16 +65,27 @@ public class AccountLinkManager {
         return foundUuid;
     }
 
-    public void link(UUID uuid, String id) {
+    public void link(UUID uuid, String discordId) {
         if (linkedAccounts.containsKey(uuid)) linkedAccounts.remove(uuid);
-        linkedAccounts.put(uuid, id);
+        linkedAccounts.put(uuid, discordId);
+        save();
+
+        String minecraftDiscordAccountLinkedConsoleCommand = Manager.getInstance().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand");
+        if (!minecraftDiscordAccountLinkedConsoleCommand.equals("")) {
+            Manager.getInstance().getPlatform().runCommand(minecraftDiscordAccountLinkedConsoleCommand
+                    .replace("%minecraftplayername%", Manager.getInstance().getPlatform().transformUuidToPlayerName(uuid.toString()))
+                    .replace("%minecraftuuid%", uuid.toString())
+                    .replace("%discordid%", discordId)
+                    .replace("%discordname%", Manager.getInstance().getMainChatChannel().getGuild().getMemberById(discordId).getEffectiveName())
+            );
+        }
     }
 
     public void unlink(UUID uuid) {
         linkedAccounts.remove(uuid);
     }
-    public void unlink(String id) {
-        linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(id)).forEach(entry -> linkedAccounts.remove(entry.getKey()));
+    public void unlink(String discordId) {
+        linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(discordId)).forEach(entry -> linkedAccounts.remove(entry.getKey()));
     }
 
 }

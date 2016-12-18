@@ -271,3 +271,14 @@ DiscordChannelPurgeCommandRoles: ["Owner", "Admin"]
 # Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+
+# Minecraft to Discord account linking
+# This is a feature that allows a server command to be ran when players link thier Minecraft UUIDs to their Discord account with the /discord link command
+# Leave blank to disable
+#
+# %minecraftplayername% = player's Minecraft username
+# %minecraftuuid% = player's uuid
+# %discordid% = linked discord account's id
+# %discordname% = linked discord account's name
+#
+MinecraftDiscordAccountLinkedConsoleCommand: ""
