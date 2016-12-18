@@ -25,8 +25,6 @@ public class DebugHandler {
     public static String run() {
         List<String> info = new LinkedList<>();
 
-        List<String> plugins = Manager.getInstance().getPlatform().queryAddons();
-
         info.add("DiscordSRV debug report - generated " + new Date());
         info.add("");
 
@@ -37,7 +35,7 @@ public class DebugHandler {
 
         info.add("Server MOTD: " + DiscordUtil.stripColor(Manager.getInstance().getPlatform().queryMotd()));
         info.add("Server players: " + Manager.getInstance().getPlatform().queryOnlinePlayers().size() + "/" + Manager.getInstance().getPlatform().queryMaxPlayers());
-        info.add("Server plugins: " + plugins);
+        info.add("Server addons: " + Manager.getInstance().getPlatform().queryAddons());
         info.add("");
         info.add("Config version: " + Manager.getInstance().getConfig().getString("ConfigVersion"));
         info.add("Plugin version: " + Manager.getVersion());
