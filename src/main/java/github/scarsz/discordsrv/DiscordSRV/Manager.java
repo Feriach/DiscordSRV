@@ -77,6 +77,9 @@ public class Manager {
     @Getter private ChannelTopicUpdater channelTopicUpdater = new ChannelTopicUpdater();
 
     public void initialize() {
+        // show initializing message
+        platform.info("Initializing DiscordSRV Manager v" + version);
+
         // send the config File to the Config & init
         config.configFile = platform.getPluginConfigFile();
         config.initialize();
