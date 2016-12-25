@@ -31,7 +31,7 @@ public class Config {
             System.out.print("Default config: " + defaultConfig);
 
             // load actual config files
-            ((Map<String, Object>) Manager.getInstance().getYaml().load(FileUtils.readFileToString(configFile, Charset.defaultCharset()))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
+            ((Map<String, Object>) Manager.getInstance().getYaml().load(FileUtils.readFileToString(configFile, Charset.defaultCharset()))).entrySet().forEach(entry -> config.put(entry.getKey(), entry.getValue()));
         } catch (IOException e) {
             e.printStackTrace();
         }
