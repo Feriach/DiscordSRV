@@ -53,7 +53,7 @@ public class Manager {
             case "bukkit": this.platformType = PlatformType.BUKKIT; break;
             case "bungeecord": this.platformType = PlatformType.BUNGEECORD; break;
             case "sponge": this.platformType = PlatformType.SPONGE; break;
-            default: platform.severe("Could not determine platform. Tell Scarsz to fix this case he's a retard."); this.platformType = PlatformType.BUKKIT;
+            default: platform.severe("Could not determine platform. Tell Scarsz to fix this cause he's a retard."); this.platformType = PlatformType.BUKKIT;
         }
     }
 
