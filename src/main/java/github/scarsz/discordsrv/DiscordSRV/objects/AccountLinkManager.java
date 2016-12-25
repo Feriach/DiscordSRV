@@ -73,7 +73,7 @@ public class AccountLinkManager {
         String minecraftDiscordAccountLinkedConsoleCommand = Manager.getInstance().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand");
         if (!minecraftDiscordAccountLinkedConsoleCommand.equals("")) {
             Manager.getInstance().getPlatform().runCommand(minecraftDiscordAccountLinkedConsoleCommand
-                    .replace("%minecraftplayername%", Manager.getInstance().getPlatform().transformUuidToPlayerName(uuid.toString()))
+                    .replace("%minecraftplayername%", Manager.getInstance().getPlatform().transformUuidToPlayerName(uuid))
                     .replace("%minecraftuuid%", uuid.toString())
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", Manager.getInstance().getMainChatChannel().getGuild().getMemberById(discordId).getEffectiveName())
