@@ -104,10 +104,10 @@ public class Manager {
                             platform.info("[JDA] " + o);
                             break;
                         case WARNING:
-                            platform.warning("[JDA] " + o);
+                            platform.warning("[JDA WARNING] " + o);
                             break;
                         case FATAL:
-                            platform.severe("[JDA] " + o);
+                            platform.severe("[JDA ERROR] " + o);
                             break;
                     }
                 }
