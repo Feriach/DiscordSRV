@@ -1,1 +1,0 @@
-Test v1.3 implementing reporting commit status from Jenkins after building the project
