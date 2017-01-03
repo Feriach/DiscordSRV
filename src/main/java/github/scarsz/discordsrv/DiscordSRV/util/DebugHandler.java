@@ -77,8 +77,8 @@ public class DebugHandler {
         info.add(String.valueOf(Manager.getInstance().getChannels()));
         info.add("");
 
-        // channel permissions
-        info.add("channel permissions");
+        // channel platformutils
+        info.add("channel platformutils");
         List<TextChannel> channelsToShowPermissionInfoOf = new ArrayList<>();
         Manager.getInstance().getChannels().values().forEach(channelsToShowPermissionInfoOf::add);
         if (Manager.getInstance().getConsoleChannel() != null) channelsToShowPermissionInfoOf.add(Manager.getInstance().getConsoleChannel());

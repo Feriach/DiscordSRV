@@ -44,7 +44,7 @@ public class HerochatHook implements Listener {
         if (event.getMessage().replace(" ", "").isEmpty()) return;
 
         //Manager.getInstance().processChatEvent(false, event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName());
-        Manager.getInstance().processEvent(new GameChatMessageEvent(event.getSender().getPlayer().getName(), event.getMessage(), event.getChannel().getName()));
+        Manager.getInstance().processEvent(new GameChatMessageEvent(event.getSender().getPlayer().getName(), event.getMessage(), event.getChannel().getName(), event.getSender().getPlayer().getWorld().getName()));
     }
 
     public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {

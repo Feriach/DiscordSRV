@@ -16,6 +16,6 @@ public abstract class Cancelable {
      * @param canceled whether or not the event should be canceled
      * @return whether or not the event is canceled
      */
-    @Getter @Setter private boolean canceled = false;
+    @Getter @Setter protected boolean canceled = false;
 
 }

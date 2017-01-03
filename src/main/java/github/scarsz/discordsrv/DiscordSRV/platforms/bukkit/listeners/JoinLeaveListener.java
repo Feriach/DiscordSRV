@@ -40,7 +40,7 @@ public class JoinLeaveListener implements Listener {
             return;
         }
 
-        // Assign player's status to online since they don't have silent join permissions
+        // Assign player's status to online since they don't have silent join platformutils
         playerStatusIsOnline.put(event.getPlayer().getUniqueId(), true);
 
         // Player doesn't have silent join permission, send join message

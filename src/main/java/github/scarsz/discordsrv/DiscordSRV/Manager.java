@@ -68,7 +68,7 @@ public class Manager {
     @Getter private final Map<String, UUID> linkingCodes = new HashMap<>();
     @Getter private final UpdateManager updateManager = new UpdateManager();
     @Getter private final List<String> randomPhrases = new ArrayList<>();
-    @Getter private final List<UUID> unsubscribedPlayers = new ArrayList<>();
+    @Getter private final List<String> unsubscribedPlayers = new ArrayList<>();
     @Getter private final Map<String, String> colors = new HashMap<>();
 
     @Getter private TextChannel mainChatChannel; //TODO

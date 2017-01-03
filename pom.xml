@@ -50,7 +50,7 @@
             <url>http://repo.spongepowered.org/maven</url>
         </repository>
 
-        <!-- repositories past this point are for plugin dependancies -->
+        <!-- repositories past this point are for plugin dependencies -->
         <repository>
             <id>scarsz</id>
             <url>https://dl.bintray.com/scarsz/maven</url>

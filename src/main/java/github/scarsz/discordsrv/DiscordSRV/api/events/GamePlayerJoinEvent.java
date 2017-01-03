@@ -2,6 +2,8 @@ package github.scarsz.discordsrv.DiscordSRV.api.events;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.api.GamePlayerEvent;
+import github.scarsz.discordsrv.DiscordSRV.util.DiscordUtil;
+import github.scarsz.discordsrv.DiscordSRV.util.PlayerUtil;
 import lombok.Getter;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,12 +16,11 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class GamePlayerJoinEvent extends GamePlayerEvent {
 
-    @Getter private final String playerName;
     @Getter private final String message;
     @Getter private final String world;
 
     public GamePlayerJoinEvent(String playerName, String message, String world) {
-        this.playerName = playerName;
+        super(playerName);
         this.message = message;
         this.world = world;
     }
@@ -53,6 +54,31 @@ public class GamePlayerJoinEvent extends GamePlayerEvent {
             e.printStackTrace();
         }
         return new GamePlayerJoinEvent(playerName, message, world);
+    }
+
+    @Override
+    public boolean perform() {
+        if (!super.perform()) return false;
+
+        // make sure join messages enabled
+        if (!Manager.getInstance().getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) return true;
+
+        // user shouldn't have a quit message from permission
+        if (PlayerUtil.hasPermission(getPlayer(), "discordsrv.silentjoin")) {
+            Manager.getInstance().getPlatform().info("Player " + getPlayer() + " joined with silent joining permission, not sending a join message");
+            return true;
+        }
+
+        //TODO assign player's status to online since they don't have silent join platformutils
+        // playerStatusIsOnline.put(event.getPlayer(), true);
+
+        // player doesn't have silent join permission, send join message
+        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerJoinMessageFormat")
+                .replace("%username%", DiscordUtil.escapeMarkdown(getPlayer()))
+                //TODO display names .replace("%displayname%", ChatColor.stripColor(DiscordSRV.escapeMarkdown(event.getPlayer().getDisplayName())))
+        );
+
+        return true;
     }
 
 }

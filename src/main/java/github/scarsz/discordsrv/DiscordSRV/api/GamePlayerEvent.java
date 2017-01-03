@@ -9,6 +9,10 @@ package github.scarsz.discordsrv.DiscordSRV.api;
  */
 public abstract class GamePlayerEvent extends Event {
 
+    public GamePlayerEvent(String player) {
+        this.player = player;
+    }
+
     private String player;
     public String getPlayer() {
         return player;

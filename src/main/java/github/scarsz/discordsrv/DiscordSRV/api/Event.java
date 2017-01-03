@@ -11,6 +11,10 @@ import github.scarsz.discordsrv.DiscordSRV.Manager;
  */
 public abstract class Event extends Cancelable {
 
+    /**
+     * Perform the event as the manager. For internal use only.
+     * @return true if event was executed successfully, false for errors like external usage
+     */
     public boolean perform() {
         String classFromStackTrace = Thread.currentThread().getStackTrace()[2].getClassName();
         if (!classFromStackTrace.contains(Manager.class.getName())) {
