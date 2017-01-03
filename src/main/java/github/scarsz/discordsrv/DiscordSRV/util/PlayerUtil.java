@@ -32,4 +32,21 @@ public class PlayerUtil {
         }
     }
 
+    public static String getDisplayName(String player) {
+        switch (Manager.getInstance().getPlatformType()) {
+            case BUKKIT: return BukkitUtil.getDisplayName(player);
+            case BUNGEECORD: return player; //TODO
+            case SPONGE: return player; //TODO
+            default: return player;
+        }
+    }
+
+    public static void sendMessage(String player, String message) {
+        switch (Manager.getInstance().getPlatformType()) {
+            case BUKKIT: BukkitUtil.sendMessage(player, message);
+            case BUNGEECORD: return; //TODO
+            case SPONGE: return; //TODO
+        }
+    }
+
 }

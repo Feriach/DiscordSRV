@@ -79,4 +79,10 @@ public abstract class DiscordSRVListener {
      */
     public void onGamePlayerQuit(GamePlayerQuitEvent event) {}
 
+    /**
+     * Called when a achievement reward event is being processed for delivery to Discord
+     * @param event
+     */
+    public void onGamePlayerAchievementRewarded(GamePlayerAchievementRewardedEvent event) {}
+
 }

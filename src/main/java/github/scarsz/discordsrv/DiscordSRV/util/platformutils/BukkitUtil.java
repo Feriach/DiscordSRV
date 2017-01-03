@@ -1,6 +1,5 @@
 package github.scarsz.discordsrv.DiscordSRV.util.platformutils;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
 import org.bukkit.Bukkit;
 
 public class BukkitUtil {
@@ -26,6 +25,14 @@ public class BukkitUtil {
 //        } catch (Exception ignored) { }
 
         return " ";
+    }
+
+    public static String getDisplayName(String player) {
+        return Bukkit.getPlayerExact(player).getDisplayName();
+    }
+
+    public static void sendMessage(String player, String message) {
+        Bukkit.getPlayerExact(player).sendMessage(message);
     }
 
 }

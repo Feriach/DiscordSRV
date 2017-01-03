@@ -18,4 +18,10 @@ public class DiscordGenericEvent extends Event {
         this.rawEvent = rawEvent;
     }
 
+    @Override
+    public String toString() {
+        return "DiscordGenericEvent{" +
+                "rawEvent=" + rawEvent +
+                '}';
+    }
 }

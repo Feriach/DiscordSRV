@@ -2,7 +2,6 @@ package github.scarsz.discordsrv.DiscordSRV.api.events;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.api.GamePlayerEvent;
-import github.scarsz.discordsrv.DiscordSRV.util.DiscordUtil;
 import lombok.Getter;
 
 import java.lang.reflect.InvocationTargetException;
@@ -42,6 +41,7 @@ public class GamePlayerAchievementRewardedEvent extends GamePlayerEvent {
                     world = (String) worldObject.getClass().getMethod("getName").invoke(worldObject);
 
                     achievement = event.getClass().getMethod("getAchievement").invoke(event).getClass().getSimpleName().toLowerCase();
+                    // turn "SHITTY_ACHIEVEMENT_NAME" into "Shitty Achievement Name"
                     List<String> achievementNameParts = new LinkedList<>();
                     for (String s : achievement.split("_"))
                         achievementNameParts.add(s.substring(0, 1).toUpperCase() + s.substring(1));
@@ -61,29 +61,6 @@ public class GamePlayerAchievementRewardedEvent extends GamePlayerEvent {
             e.printStackTrace();
         }
         return new GamePlayerAchievementRewardedEvent(playerName, world, achievement);
-    }
-
-    @Override
-    public boolean perform() {
-        if (!super.perform()) return false;
-
-        // return if achievement messages are disabled
-        if (!Manager.getInstance().getConfig().getBoolean("MinecraftPlayerAchievementMessagesEnabled")) return true;
-
-        // turn "SHITTY_ACHIEVEMENT_NAME" into "Shitty Achievement Name"
-        List<String> achievementNameParts = new LinkedList<>();
-        for (String s : getAchievement().toLowerCase().split("_"))
-            achievementNameParts.add(s.substring(0, 1).toUpperCase() + s.substring(1));
-        String achievementName = String.join(" ", achievementNameParts);
-
-        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), DiscordUtil.stripColor(Manager.getInstance().getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
-                .replace("%username%", getPlayer())
-                //TODO display names .replace("%displayname%", event.getPlayer().getDisplayName())
-                .replace("%world%", getWorld())
-                .replace("%achievement%", achievementName)
-        ));
-
-        return true;
     }
 
 }

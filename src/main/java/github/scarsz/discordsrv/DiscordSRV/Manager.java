@@ -207,7 +207,7 @@ public class Manager {
 
                     boolean isCanceled = event.isCanceled();
                     method.invoke(listener, event);
-                    if (isCanceled != event.isCanceled() && config.getBoolean("Debug")) platform.debug("Event " + event.getClass().getSimpleName() + " canceled by " + listener.getName());
+                    if (isCanceled != event.isCanceled()) platform.debug("Event " + event.getClass().getSimpleName() + " canceled by " + listener.getName());
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -217,11 +217,12 @@ public class Manager {
         // at this point, all listeners have been informed of the event. the for loop ends directly
         // after the last MONITOR priority, so code after this is technically also MONITOR priority
 
-        // don't process event if a listener canceled it
-        if (event.isCanceled()) return;
-
-        // perform event
-        event.perform();
+        // I'm stupid
+//        // don't process event if a listener canceled it
+//        if (event.isCanceled()) return;
+//
+//        // perform event
+//        event.perform();
     }
 
     public void addListener(DiscordSRVListener listener) {

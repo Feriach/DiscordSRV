@@ -5,7 +5,7 @@ import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.DeathListener;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.chat.*;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects.BukkitDiscordSRVListener;
-import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects.CancelationDetector;
+import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects.CancellationDetector;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects.Lag;
 import lombok.Getter;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -112,7 +112,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
         |__/      |__/ \_______/   \___/  |__/     \______/ |__/      |__/ |__/ |__/
      */
 
-    private CancelationDetector<AsyncPlayerChatEvent> cancelationDetector = new CancelationDetector<>(AsyncPlayerChatEvent.class);
+    private CancellationDetector<AsyncPlayerChatEvent> cancelationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
 
     @Override
     public void onEnable() {

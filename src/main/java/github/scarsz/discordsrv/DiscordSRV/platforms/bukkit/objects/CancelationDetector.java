@@ -20,7 +20,7 @@ import java.util.List;
  * @on 12/17/2016
  * @at 7:55 PM
  */
-public class CancelationDetector<TEvent extends Event> {
+public class CancellationDetector<TEvent extends Event> {
 
     public interface CancelListener<TEvent extends Event> {
         void onCancelled(Plugin plugin, TEvent event);
