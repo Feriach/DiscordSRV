@@ -65,7 +65,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
         getLogger().severe(message);
     }
     public void debug(String message) {
-        getLogger().info("DEBUG | " + message);
+        if (getConfig().getBoolean("Debug")) getLogger().info("DEBUG | " + message);
     }
 
     public List<String> queryAddons() {
