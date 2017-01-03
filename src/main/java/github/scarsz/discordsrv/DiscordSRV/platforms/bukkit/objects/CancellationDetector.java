@@ -32,7 +32,7 @@ public class CancellationDetector<TEvent extends Event> {
     // For reverting the detector
     private EnumMap<EventPriority, ArrayList<RegisteredListener>> backup;
 
-    public CancelationDetector(Class<TEvent> eventClazz) {
+    public CancellationDetector(Class<TEvent> eventClazz) {
         this.eventClazz = eventClazz;
         injectProxy();
     }
