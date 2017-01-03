@@ -216,13 +216,7 @@ public class Manager {
 
         // at this point, all listeners have been informed of the event. the for loop ends directly
         // after the last MONITOR priority, so code after this is technically also MONITOR priority
-
-        // I'm stupid
-//        // don't process event if a listener canceled it
-//        if (event.isCanceled()) return;
-//
-//        // perform event
-//        event.perform();
+        // but there's nothing to see here
     }
 
     public void addListener(DiscordSRVListener listener) {
