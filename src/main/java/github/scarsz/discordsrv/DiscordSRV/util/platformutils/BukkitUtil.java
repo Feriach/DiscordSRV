@@ -2,6 +2,7 @@ package github.scarsz.discordsrv.DiscordSRV.util.platformutils;
 
 import org.bukkit.Bukkit;
 
+@SuppressWarnings("deprecation")
 public class BukkitUtil {
 
     public static boolean playerHasPermission(String player, String permission) {

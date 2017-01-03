@@ -41,7 +41,7 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
 
     @Override
     public void onDiscordPrivateMessageChatMessage(DiscordPrivateMessageChatMessageEvent event) {
-
+        //TODO
     }
 
     @Override
