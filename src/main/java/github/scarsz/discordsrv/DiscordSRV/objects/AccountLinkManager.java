@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.objects;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
+import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -9,7 +10,6 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 
 /**
  * Made by Scarsz
@@ -21,7 +21,9 @@ import java.util.UUID;
 public class AccountLinkManager {
 
     private final File accountsFile;
-    private final HashMap<UUID, String> linkedAccounts = new HashMap<>();
+
+    @Getter private final HashMap<String, String> codes = new HashMap<>();
+    private final HashMap<String, String> linkedAccounts = new HashMap<>();
 
     public AccountLinkManager(File file) {
         accountsFile = file;
@@ -40,7 +42,7 @@ public class AccountLinkManager {
 
         try {
             TreeMap<String, String> mapFromFile = Manager.getInstance().getYaml().loadAs(FileUtils.readFileToString(accountsFile, Charset.defaultCharset()), TreeMap.class);
-            mapFromFile.forEach((uuid, s) -> linkedAccounts.put(UUID.fromString(uuid), s));
+            mapFromFile.forEach(linkedAccounts::put);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,43 +50,43 @@ public class AccountLinkManager {
     public void save() {
         try {
             HashMap<String, String> linkedAccountsStringMap = new HashMap<>();
-            linkedAccounts.forEach((uuid, s) -> linkedAccountsStringMap.put(String.valueOf(uuid), s));
+            linkedAccounts.forEach(linkedAccountsStringMap::put);
             FileUtils.writeStringToFile(accountsFile, Manager.getInstance().getYaml().dump(linkedAccountsStringMap), Charset.defaultCharset());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public String getDiscordIdOfUuid(UUID uuid) {
-        return linkedAccounts.containsKey(uuid) ? linkedAccounts.get(uuid) : null;
+    public String getDiscordIdOfGameId(String id) {
+        return linkedAccounts.containsKey(id) ? linkedAccounts.get(id) : null;
     }
-    public UUID getUuidOfDiscordId(String discordId) {
-        UUID foundUuid = null;
-        for (Map.Entry<UUID, String> entry : linkedAccounts.entrySet())
-            if (entry.getValue().equals(discordId)) foundUuid = entry.getKey();
-        return foundUuid;
+    public String getGameIdOfDiscordId(String discordId) {
+        String foundId = null;
+        for (Map.Entry<String, String> entry : linkedAccounts.entrySet())
+            if (entry.getValue().equals(discordId)) foundId = entry.getKey();
+        return foundId;
     }
 
-    public void link(UUID uuid, String discordId) {
-        if (linkedAccounts.containsKey(uuid)) linkedAccounts.remove(uuid);
-        linkedAccounts.put(uuid, discordId);
+    public void link(String gameId, String discordId) {
+        if (linkedAccounts.containsKey(gameId)) linkedAccounts.remove(gameId);
+        linkedAccounts.put(gameId, discordId);
         save();
 
         String minecraftDiscordAccountLinkedConsoleCommand = Manager.getInstance().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand");
         if (!minecraftDiscordAccountLinkedConsoleCommand.equals("")) {
             Manager.getInstance().getPlatform().runCommand(minecraftDiscordAccountLinkedConsoleCommand
-                    .replace("%minecraftplayername%", Manager.getInstance().getPlatform().transformUuidToPlayerName(uuid))
-                    .replace("%minecraftuuid%", uuid.toString())
+                    .replace("%minecraftplayername%", Manager.getInstance().getPlatform().transformGameIdToPlayerName(gameId))
+                    .replace("%minecraftuuid%", gameId)
                     .replace("%discordid%", discordId)
                     .replace("%discordname%", Manager.getInstance().getMainChatChannel().getGuild().getMemberById(discordId).getEffectiveName())
             );
         }
     }
 
-    public void unlink(UUID uuid) {
-        linkedAccounts.remove(uuid);
+    public void unlinkGameId(String gameId) {
+        linkedAccounts.remove(gameId);
     }
-    public void unlink(String discordId) {
+    public void unlinkDiscordId(String discordId) {
         linkedAccounts.entrySet().stream().filter(entry -> entry.getValue().equals(discordId)).forEach(entry -> linkedAccounts.remove(entry.getKey()));
     }
 

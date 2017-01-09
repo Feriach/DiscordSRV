@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Made by Scarsz
@@ -117,9 +116,9 @@ public interface Platform {
 
     /**
      * Turn the given uuid into the corresponding player's name
-     * @param uuid
+     * @param gameId
      * @return
      */
-    String transformUuidToPlayerName(UUID uuid);
+    String transformGameIdToPlayerName(String gameId);
 
 }

@@ -65,7 +65,6 @@ public class Manager {
     @Getter private JDA jda = null;
     @Getter private final long startTime = System.currentTimeMillis();
     @Getter private AccountLinkManager accountLinkManager = new AccountLinkManager(new File(platform.getPluginConfigFile().getParentFile(), "accounts.yml"));
-    @Getter private final Map<String, UUID> linkingCodes = new HashMap<>();
     @Getter private final UpdateManager updateManager = new UpdateManager();
     @Getter private final List<String> randomPhrases = new ArrayList<>();
     @Getter private final List<String> unsubscribedPlayers = new ArrayList<>();

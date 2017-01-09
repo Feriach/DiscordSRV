@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -97,8 +96,8 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
     public void runCommand(String command) {
         Bukkit.getScheduler().runTask(this, () -> Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), command));
     }
-    public String transformUuidToPlayerName(UUID uuid) {
-        return Bukkit.getOfflinePlayer(uuid).getName();
+    public String transformGameIdToPlayerName(String gameId) {
+        return Bukkit.getOfflinePlayer(gameId).getName();
     }
 
     /*

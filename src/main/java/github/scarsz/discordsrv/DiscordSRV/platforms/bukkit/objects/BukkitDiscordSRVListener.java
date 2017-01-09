@@ -41,7 +41,18 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
 
     @Override
     public void onDiscordPrivateMessageChatMessage(DiscordPrivateMessageChatMessageEvent event) {
-        //TODO
+        // this method should only be handling linking codes
+        if (!event.getMessage().matches("[0-9][0-9][0-9][0-9]")) return;
+
+        if (Manager.getInstance().getAccountLinkManager().getCodes().containsKey(event.getMessage())) {
+            Manager.getInstance().getAccountLinkManager().link(Manager.getInstance().getAccountLinkManager().getCodes().get(event.getMessage()), event.getSenderId());
+            Manager.getInstance().getAccountLinkManager().getCodes().remove(event.getMessage());
+            event.getPrivateChannel().sendMessage("Your Discord account has been linked to Game ID " + Manager.getInstance().getAccountLinkManager().getGameIdOfDiscordId(event.getSenderId())).queue();
+            if (Bukkit.getPlayer(Manager.getInstance().getAccountLinkManager().getGameIdOfDiscordId(event.getSenderId())).isOnline())
+                Bukkit.getPlayer(Manager.getInstance().getAccountLinkManager().getGameIdOfDiscordId(event.getSenderId())).sendMessage(ChatColor.AQUA + "Your UUID has been linked to Discord ID " + event.getSenderName());
+        } else {
+            event.getPrivateChannel().sendMessage("I don't know of such a code, try again.").queue();
+        }
     }
 
     @Override
