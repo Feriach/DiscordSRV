@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.api;
 
 import github.scarsz.discordsrv.DiscordSRV.api.events.*;
+import lombok.Getter;
 
 /**
  * Made by Scarsz
@@ -11,23 +12,8 @@ import github.scarsz.discordsrv.DiscordSRV.api.events.*;
 @SuppressWarnings("unused")
 public abstract class DiscordSRVListener {
 
-    private final String name;
-    /**
-     * Get the name of the listener
-     * @return the name of the listener
-     */
-    public final String getName() {
-        return name;
-    }
-
-    private final Priority priority;
-    /**
-     * Get the name of the listener
-     * @return the name of the listener
-     */
-    public final Priority getPriority() {
-        return priority;
-    }
+    @Getter private final String name;
+    @Getter private final Priority priority;
 
     public DiscordSRVListener(String name) {
         this(name, Priority.NORMAL);
