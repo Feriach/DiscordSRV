@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.objects;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -27,11 +27,11 @@ public class Config {
     public void initialize() {
         try {
             // load default config values
-            ((Map<String, Object>) Manager.getInstance().getYaml().load(Manager.getInstance().getPlatform().getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
+            ((Map<String, Object>) DiscordSRV.getInstance().getYaml().load(DiscordSRV.getInstance().getPlatform().getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
             System.out.print("Default config: " + defaultConfig);
 
             // load actual config files
-            ((Map<String, Object>) Manager.getInstance().getYaml().load(FileUtils.readFileToString(configFile, Charset.defaultCharset()))).entrySet().forEach(entry -> config.put(entry.getKey(), entry.getValue()));
+            ((Map<String, Object>) DiscordSRV.getInstance().getYaml().load(FileUtils.readFileToString(configFile, Charset.defaultCharset()))).entrySet().forEach(entry -> config.put(entry.getKey(), entry.getValue()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,7 +42,7 @@ public class Config {
         if (configFile == null) throw new NullPointerException("Config file is null. Can't save.");
         try {
             //TODO properly(?) save
-            FileUtils.writeStringToFile(configFile, Manager.getInstance().getYaml().dump(config), Charset.defaultCharset());
+            FileUtils.writeStringToFile(configFile, DiscordSRV.getInstance().getYaml().dump(config), Charset.defaultCharset());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 
 /**
  * Made by Scarsz
@@ -15,7 +15,7 @@ public class Lag implements Runnable {
     private static long[] ticks = new long[600];
 
     public static String getTPSString() {
-        return Manager.getDecimalFormat().format(getTps());
+        return DiscordSRV.getDecimalFormat().format(getTps());
     }
 
     private static double getTps() {

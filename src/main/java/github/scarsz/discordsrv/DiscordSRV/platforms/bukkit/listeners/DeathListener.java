@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GamePlayerDeathEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,7 +18,7 @@ public class DeathListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent event) {
-        Manager.getInstance().processEvent(GamePlayerDeathEvent.fromEvent(event));
+        DiscordSRV.getInstance().processEvent(GamePlayerDeathEvent.fromEvent(event));
     }
 
 }

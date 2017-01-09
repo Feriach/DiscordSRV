@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.chat;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessageEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,7 +18,7 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        Manager.getInstance().processEvent(GameChatMessageEvent.fromEvent(event, null));
+        DiscordSRV.getInstance().processEvent(GameChatMessageEvent.fromEvent(event, null));
     }
 
 }

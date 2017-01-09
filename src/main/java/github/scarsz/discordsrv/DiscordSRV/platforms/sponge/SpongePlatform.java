@@ -1,7 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.sponge;
 
 import com.google.inject.Inject;
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -34,13 +34,13 @@ public abstract class SpongePlatform implements Platform {
     @Inject
     private Logger logger;
 
-    public Manager manager = new Manager(this);
+    public DiscordSRV discordSRV = new DiscordSRV(this);
     public static SpongePlatform instance = null;
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         instance = this;
-        manager.initialize();
+        discordSRV.initialize();
     }
 
     @Listener
@@ -51,6 +51,6 @@ public abstract class SpongePlatform implements Platform {
 
     @Override
     public String queryTps() {
-        return Manager.getDecimalFormat().format(Sponge.getServer().getTicksPerSecond());
+        return DiscordSRV.getDecimalFormat().format(Sponge.getServer().getTicksPerSecond());
     }
 }

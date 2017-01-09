@@ -4,7 +4,7 @@ import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessageEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -26,7 +26,7 @@ import java.util.List;
 public class HerochatHook implements Listener {
 
     public HerochatHook() {
-        Manager.getInstance().getHookedPlugins().add("herochat");
+        DiscordSRV.getInstance().getHookedPlugins().add("herochat");
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -35,22 +35,22 @@ public class HerochatHook implements Listener {
         if (event.getResult() != Chatter.Result.ALLOWED) return;
 
         // make sure chat channel is registered
-        if (!Manager.getInstance().chatChannelIsLinked(event.getChannel().getName())) return;
+        if (!DiscordSRV.getInstance().chatChannelIsLinked(event.getChannel().getName())) return;
 
         // make sure chat channel is linked to discord channel
-        if (Manager.getInstance().getTextChannelFromChannelName(event.getChannel().getName()) == null) return;
+        if (DiscordSRV.getInstance().getTextChannelFromChannelName(event.getChannel().getName()) == null) return;
 
         // make sure message isn't blank
         if (event.getMessage().replace(" ", "").isEmpty()) return;
 
         //Manager.getInstance().processChatEvent(false, event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName());
-        Manager.getInstance().processEvent(new GameChatMessageEvent(event.getSender().getPlayer().getName(), event.getMessage(), event.getChannel().getName(), event.getSender().getPlayer().getWorld().getName()));
+        DiscordSRV.getInstance().processEvent(new GameChatMessageEvent(event.getSender().getPlayer().getName(), event.getMessage(), event.getChannel().getName(), event.getSender().getPlayer().getWorld().getName()));
     }
 
     public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {
         Channel chatChannel = Herochat.getChannelManager().getChannel(channelName);
         if (chatChannel == null) return; // no suitable channel found
-        chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', Manager.getInstance().getConfig().getString("ChatChannelHookMessageFormat")
+        chatChannel.sendRawMessage(ChatColor.translateAlternateColorCodes('&', DiscordSRV.getInstance().getConfig().getString("ChatChannelHookMessageFormat")
                 .replace("%channelcolor%", chatChannel.getColor().toString())
                 .replace("%channelname%", chatChannel.getName())
                 .replace("%channelnickname%", chatChannel.getNick())

@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.DeathListener;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.chat.*;
@@ -140,9 +140,9 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
             e.printStackTrace();
         }
 
-        new Manager(this);
-        Manager.getInstance().initialize();
-        Manager.getInstance().addListener(new BukkitDiscordSRVListener());
+        new DiscordSRV(this);
+        DiscordSRV.getInstance().initialize();
+        DiscordSRV.getInstance().addListener(new BukkitDiscordSRVListener());
 
         // clear past tasks in scheduler if any
         Bukkit.getServer().getScheduler().cancelTasks(this);
@@ -175,7 +175,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
         getServer().getPluginManager().registerEvents(new DeathListener(), this);
 
         // enable reporting plugins that have canceled chat events
-        if (Manager.getInstance().getConfig().getBoolean("ReportCanceledChatEvents")) {
+        if (DiscordSRV.getInstance().getConfig().getBoolean("ReportCanceledChatEvents")) {
             getLogger().info("Chat event cancelation detector has been enabled");
             cancelationDetector.addListener((plugin, event) -> info(event.getClass().getName() + " cancelled by " + plugin));
         }
@@ -184,7 +184,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
     @Override
     public void onDisable() {
         // shutdown manager
-        Manager.getInstance().shutdown();
+        DiscordSRV.getInstance().shutdown();
 
         // stop cancelation detector
         cancelationDetector.close();

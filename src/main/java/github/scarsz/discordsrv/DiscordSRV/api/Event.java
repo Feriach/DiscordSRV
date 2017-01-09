@@ -1,7 +1,5 @@
 package github.scarsz.discordsrv.DiscordSRV.api;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
-
 /**
  * Made by Scarsz
  *

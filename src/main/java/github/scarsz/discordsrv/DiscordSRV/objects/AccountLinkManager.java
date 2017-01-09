@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.objects;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 
@@ -41,7 +41,7 @@ public class AccountLinkManager {
         linkedAccounts.clear();
 
         try {
-            TreeMap<String, String> mapFromFile = Manager.getInstance().getYaml().loadAs(FileUtils.readFileToString(accountsFile, Charset.defaultCharset()), TreeMap.class);
+            TreeMap<String, String> mapFromFile = DiscordSRV.getInstance().getYaml().loadAs(FileUtils.readFileToString(accountsFile, Charset.defaultCharset()), TreeMap.class);
             mapFromFile.forEach(linkedAccounts::put);
         } catch (IOException e) {
             e.printStackTrace();
@@ -51,7 +51,7 @@ public class AccountLinkManager {
         try {
             HashMap<String, String> linkedAccountsStringMap = new HashMap<>();
             linkedAccounts.forEach(linkedAccountsStringMap::put);
-            FileUtils.writeStringToFile(accountsFile, Manager.getInstance().getYaml().dump(linkedAccountsStringMap), Charset.defaultCharset());
+            FileUtils.writeStringToFile(accountsFile, DiscordSRV.getInstance().getYaml().dump(linkedAccountsStringMap), Charset.defaultCharset());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,13 +72,13 @@ public class AccountLinkManager {
         linkedAccounts.put(gameId, discordId);
         save();
 
-        String minecraftDiscordAccountLinkedConsoleCommand = Manager.getInstance().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand");
+        String minecraftDiscordAccountLinkedConsoleCommand = DiscordSRV.getInstance().getConfig().getString("MinecraftDiscordAccountLinkedConsoleCommand");
         if (!minecraftDiscordAccountLinkedConsoleCommand.equals("")) {
-            Manager.getInstance().getPlatform().runCommand(minecraftDiscordAccountLinkedConsoleCommand
-                    .replace("%minecraftplayername%", Manager.getInstance().getPlatform().transformGameIdToPlayerName(gameId))
+            DiscordSRV.getInstance().getPlatform().runCommand(minecraftDiscordAccountLinkedConsoleCommand
+                    .replace("%minecraftplayername%", DiscordSRV.getInstance().getPlatform().transformGameIdToPlayerName(gameId))
                     .replace("%minecraftuuid%", gameId)
                     .replace("%discordid%", discordId)
-                    .replace("%discordname%", Manager.getInstance().getMainChatChannel().getGuild().getMemberById(discordId).getEffectiveName())
+                    .replace("%discordname%", DiscordSRV.getInstance().getMainChatChannel().getGuild().getMemberById(discordId).getEffectiveName())
             );
         }
     }

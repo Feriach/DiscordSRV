@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.util;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.TextChannel;
 import org.apache.commons.io.FileUtils;
@@ -28,18 +28,18 @@ public class DebugHandler {
         info.add("DiscordSRV debug report - generated " + new Date());
         info.add("");
 
-        if (Manager.getInstance().getRandomPhrases().size() > 0) {
-            info.add(Manager.getInstance().getRandomPhrases().get(new Random().nextInt(Manager.getInstance().getRandomPhrases().size())));
+        if (DiscordSRV.getInstance().getRandomPhrases().size() > 0) {
+            info.add(DiscordSRV.getInstance().getRandomPhrases().get(new Random().nextInt(DiscordSRV.getInstance().getRandomPhrases().size())));
             info.add("");
         }
 
-        info.add("Server MOTD: " + DiscordUtil.stripColor(Manager.getInstance().getPlatform().queryMotd()));
-        info.add("Server players: " + Manager.getInstance().getPlatform().queryOnlinePlayers().size() + "/" + Manager.getInstance().getPlatform().queryMaxPlayers());
-        info.add("Server addons: " + Manager.getInstance().getPlatform().queryAddons());
+        info.add("Server MOTD: " + DiscordUtil.stripColor(DiscordSRV.getInstance().getPlatform().queryMotd()));
+        info.add("Server players: " + DiscordSRV.getInstance().getPlatform().queryOnlinePlayers().size() + "/" + DiscordSRV.getInstance().getPlatform().queryMaxPlayers());
+        info.add("Server addons: " + DiscordSRV.getInstance().getPlatform().queryAddons());
         info.add("");
-        info.add("Config version: " + Manager.getInstance().getConfig().getString("ConfigVersion"));
-        info.add("Plugin version: " + Manager.getVersion());
-        info.add("Version: " + Manager.getInstance().getPlatform().queryServerVersion());
+        info.add("Config version: " + DiscordSRV.getInstance().getConfig().getString("ConfigVersion"));
+        info.add("Plugin version: " + DiscordSRV.getVersion());
+        info.add("Version: " + DiscordSRV.getInstance().getPlatform().queryServerVersion());
         info.add("");
 
         // system properties
@@ -69,19 +69,19 @@ public class DebugHandler {
 
         // config.yml
         info.add("parsed config");
-        info.addAll(Manager.getInstance().getConfig().getEntrySet().stream().filter(s -> !s.getKey().equals("BotToken")).map(s -> s + ": " + s.getValue()).collect(Collectors.toList()));
+        info.addAll(DiscordSRV.getInstance().getConfig().getEntrySet().stream().filter(s -> !s.getKey().equals("BotToken")).map(s -> s + ": " + s.getValue()).collect(Collectors.toList()));
         info.add("");
 
         // channels
         info.add("channels");
-        info.add(String.valueOf(Manager.getInstance().getChannels()));
+        info.add(String.valueOf(DiscordSRV.getInstance().getChannels()));
         info.add("");
 
         // channel platformutils
         info.add("channel platformutils");
         List<TextChannel> channelsToShowPermissionInfoOf = new ArrayList<>();
-        Manager.getInstance().getChannels().values().forEach(channelsToShowPermissionInfoOf::add);
-        if (Manager.getInstance().getConsoleChannel() != null) channelsToShowPermissionInfoOf.add(Manager.getInstance().getConsoleChannel());
+        DiscordSRV.getInstance().getChannels().values().forEach(channelsToShowPermissionInfoOf::add);
+        if (DiscordSRV.getInstance().getConsoleChannel() != null) channelsToShowPermissionInfoOf.add(DiscordSRV.getInstance().getConsoleChannel());
         for (TextChannel textChannel : channelsToShowPermissionInfoOf) {
             List<String> permissions = new ArrayList<>();
             if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_READ)) permissions.add("read");
@@ -95,7 +95,7 @@ public class DebugHandler {
         // channels.json
         info.add("channels.json");
         try {
-            FileReader fr = new FileReader(new File(Manager.getInstance().getPlatform().getPluginConfigFile().getParentFile(), "channels.json"));
+            FileReader fr = new FileReader(new File(DiscordSRV.getInstance().getPlatform().getPluginConfigFile().getParentFile(), "channels.json"));
             BufferedReader br = new BufferedReader(fr);
             boolean done = false;
             while (!done)
@@ -113,15 +113,15 @@ public class DebugHandler {
 
         // discordsrv info
         info.add("discordsrv info");
-        info.add("consoleChannel: " + Manager.getInstance().getConsoleChannel());
-        info.add("mainChatChannel: " + Manager.getInstance().getMainChatChannel());
-        info.add("unsubscribedPlayers: " + Manager.getInstance().getUnsubscribedPlayers());
-        info.add("colors: " + Manager.getInstance().getColors());
+        info.add("consoleChannel: " + DiscordSRV.getInstance().getConsoleChannel());
+        info.add("mainChatChannel: " + DiscordSRV.getInstance().getMainChatChannel());
+        info.add("unsubscribedPlayers: " + DiscordSRV.getInstance().getUnsubscribedPlayers());
+        info.add("colors: " + DiscordSRV.getInstance().getColors());
         info.add("threads: " + Arrays.asList(
-                "channelTopicUpdater -> alive: " + (Manager.getInstance().getChannelTopicUpdater() != null && Manager.getInstance().getChannelTopicUpdater().isAlive())
+                "channelTopicUpdater -> alive: " + (DiscordSRV.getInstance().getChannelTopicUpdater() != null && DiscordSRV.getInstance().getChannelTopicUpdater().isAlive())
         ));
-        info.add("updateIsAvailable: " + Manager.getInstance().getUpdateManager().isUpdateAvailable());
-        info.add("hookedPlugins: " + Manager.getInstance().getHookedPlugins());
+        info.add("updateIsAvailable: " + DiscordSRV.getInstance().getUpdateManager().isUpdateAvailable());
+        info.add("hookedPlugins: " + DiscordSRV.getInstance().getHookedPlugins());
         info.add("");
 
         // latest.log lines
@@ -161,16 +161,16 @@ public class DebugHandler {
             }
         } catch (RuntimeException e) {
             // fucking hastebin
-            Manager.getInstance().getPlatform().warning("Failed uploading debug report to Hastebin (" + e.getMessage() + ")");
+            DiscordSRV.getInstance().getPlatform().warning("Failed uploading debug report to Hastebin (" + e.getMessage() + ")");
 
             File debugReportFile = new File("DiscordSRVDebugReport.txt");
             try {
                 FileUtils.writeStringToFile(debugReportFile, data, Charset.defaultCharset());
-                Manager.getInstance().getPlatform().warning("The debug report has been dumped to " + debugReportFile.getName() + " in the server's main folder");
+                DiscordSRV.getInstance().getPlatform().warning("The debug report has been dumped to " + debugReportFile.getName() + " in the server's main folder");
                 return "<server folder>/" + debugReportFile.getName();
             } catch (IOException e1) {
                 // shit has completely hit the fan
-                Manager.getInstance().getPlatform().warning("Additionally, we couldn't dump the debug report to a file. Thus, here's the debug report in the console:\n" + data);
+                DiscordSRV.getInstance().getPlatform().warning("Additionally, we couldn't dump the debug report to a file. Thus, here's the debug report in the console:\n" + data);
                 return "the console";
             }
         }

@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.api.events;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import github.scarsz.discordsrv.DiscordSRV.api.GamePlayerEvent;
 import lombok.Getter;
 
@@ -30,7 +30,7 @@ public class GamePlayerQuitEvent extends GamePlayerEvent {
         String world = null;
 
         try {
-            switch (Manager.getInstance().getPlatformType()) {
+            switch (DiscordSRV.getInstance().getPlatformType()) {
                 case BUKKIT:
                     Object player = event.getClass().getMethod("getPlayer").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);

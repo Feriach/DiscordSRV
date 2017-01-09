@@ -36,14 +36,14 @@ import java.util.*;
  * @in /dev/hell
  * @at 11/7/2016
  */
-public class Manager {
+public class DiscordSRV {
 
-    @Getter private static Manager instance;
+    @Getter private static DiscordSRV instance;
     @Getter private static String version = "13.0-SNAPSHOT";
     @Getter private Platform platform;
     @Getter private PlatformType platformType;
 
-    public Manager(Platform platform) {
+    public DiscordSRV(Platform platform) {
         instance = this;
         this.platform = platform;
         config = new Config();

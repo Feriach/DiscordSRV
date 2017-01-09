@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.objects;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import github.scarsz.discordsrv.DiscordSRV.api.DiscordSRVListener;
 import github.scarsz.discordsrv.DiscordSRV.api.events.*;
 import github.scarsz.discordsrv.DiscordSRV.util.DiscordUtil;
@@ -28,7 +28,7 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
 
     @Override
     public void onDiscordGeneric(DiscordGenericEvent event) {
-        Manager.getInstance().getPlatform().debug("Generic event received from Discord: " + event);
+        DiscordSRV.getInstance().getPlatform().debug("Generic event received from Discord: " + event);
     }
 
     @Override
@@ -44,12 +44,12 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
         // this method should only be handling linking codes
         if (!event.getMessage().matches("[0-9][0-9][0-9][0-9]")) return;
 
-        if (Manager.getInstance().getAccountLinkManager().getCodes().containsKey(event.getMessage())) {
-            Manager.getInstance().getAccountLinkManager().link(Manager.getInstance().getAccountLinkManager().getCodes().get(event.getMessage()), event.getSenderId());
-            Manager.getInstance().getAccountLinkManager().getCodes().remove(event.getMessage());
-            event.getPrivateChannel().sendMessage("Your Discord account has been linked to Game ID " + Manager.getInstance().getAccountLinkManager().getGameIdOfDiscordId(event.getSenderId())).queue();
-            if (Bukkit.getPlayer(Manager.getInstance().getAccountLinkManager().getGameIdOfDiscordId(event.getSenderId())).isOnline())
-                Bukkit.getPlayer(Manager.getInstance().getAccountLinkManager().getGameIdOfDiscordId(event.getSenderId())).sendMessage(ChatColor.AQUA + "Your UUID has been linked to Discord ID " + event.getSenderName());
+        if (DiscordSRV.getInstance().getAccountLinkManager().getCodes().containsKey(event.getMessage())) {
+            DiscordSRV.getInstance().getAccountLinkManager().link(DiscordSRV.getInstance().getAccountLinkManager().getCodes().get(event.getMessage()), event.getSenderId());
+            DiscordSRV.getInstance().getAccountLinkManager().getCodes().remove(event.getMessage());
+            event.getPrivateChannel().sendMessage("Your Discord account has been linked to Game ID " + DiscordSRV.getInstance().getAccountLinkManager().getGameIdOfDiscordId(event.getSenderId())).queue();
+            if (Bukkit.getPlayer(DiscordSRV.getInstance().getAccountLinkManager().getGameIdOfDiscordId(event.getSenderId())).isOnline())
+                Bukkit.getPlayer(DiscordSRV.getInstance().getAccountLinkManager().getGameIdOfDiscordId(event.getSenderId())).sendMessage(ChatColor.AQUA + "Your UUID has been linked to Discord ID " + event.getSenderName());
         } else {
             event.getPrivateChannel().sendMessage("I don't know of such a code, try again.").queue();
         }
@@ -58,11 +58,11 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
     @Override
     public void onGameChatMessage(GameChatMessageEvent event) {
         // ReportCanceledChatEvents debug message
-        if (Manager.getInstance().getConfig().getBoolean("ReportCanceledChatEvents")) Manager.getInstance().getPlatform().info("Chat message received, canceled: " + event.isCanceled());
+        if (DiscordSRV.getInstance().getConfig().getBoolean("ReportCanceledChatEvents")) DiscordSRV.getInstance().getPlatform().info("Chat message received, canceled: " + event.isCanceled());
 
         // return if player doesn't have permission
         if (!PlayerUtil.hasPermission(event.getPlayer(), "discordsrv.chat") && !(PlayerUtil.isOp(event.getPlayer()) || PlayerUtil.hasPermission(event.getPlayer(), "discordsrv.admin"))) {
-            if (Manager.getInstance().getConfig().getBoolean("EventDebug")) Manager.getInstance().getPlatform().info("User " + event.getPlayer() + " sent a message but it was not delivered to Discord due to lack of permission");
+            if (DiscordSRV.getInstance().getConfig().getBoolean("EventDebug")) DiscordSRV.getInstance().getPlatform().info("User " + event.getPlayer() + " sent a message but it was not delivered to Discord due to lack of permission");
             return;
         }
 
@@ -71,21 +71,21 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
 //        if (Bukkit.getPluginManager().isPluginEnabled("mcMMO") && (ChatAPI.isUsingPartyChat(sender) || ChatAPI.isUsingAdminChat(sender))) return;
 
         // return if event canceled
-        if (Manager.getInstance().getConfig().getBoolean("DontSendCanceledChatEvents") && event.isCanceled()) return;
+        if (DiscordSRV.getInstance().getConfig().getBoolean("DontSendCanceledChatEvents") && event.isCanceled()) return;
 
         // return if should not send in-game chat
-        if (!Manager.getInstance().getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) return;
+        if (!DiscordSRV.getInstance().getConfig().getBoolean("DiscordChatChannelMinecraftToDiscord")) return;
 
         // return if user is unsubscribed from Discord and config says don't send those peoples' messages
-        if (Manager.getInstance().getUnsubscribedPlayers().contains(event.getPlayer()) && !Manager.getInstance().getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
+        if (DiscordSRV.getInstance().getUnsubscribedPlayers().contains(event.getPlayer()) && !DiscordSRV.getInstance().getConfig().getBoolean("MinecraftUnsubscribedMessageForwarding")) return;
 
         // return if doesn't match prefix filter
-        if (!event.getMessage().startsWith(Manager.getInstance().getConfig().getString("DiscordChatChannelPrefix"))) return;
+        if (!event.getMessage().startsWith(DiscordSRV.getInstance().getConfig().getString("DiscordChatChannelPrefix"))) return;
 
         String userPrimaryGroup = PlayerUtil.getPrimaryGroup(event.getPlayer());
         boolean hasGoodGroup = !"".equals(userPrimaryGroup.replace(" ", ""));
 
-        String format = hasGoodGroup ? Manager.getInstance().getConfig().getString("MinecraftChatToDiscordMessageFormat") : Manager.getInstance().getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
+        String format = hasGoodGroup ? DiscordSRV.getInstance().getConfig().getString("MinecraftChatToDiscordMessageFormat") : DiscordSRV.getInstance().getConfig().getString("MinecraftChatToDiscordMessageFormatNoPrimaryGroup");
         String discordMessage = format
                 .replaceAll("&([0-9a-qs-z])", "")
                 .replace("%message%", DiscordUtil.stripColor(event.getMessage()))
@@ -98,10 +98,10 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
                 .replace("%date%", new Date().toString())
                 ;
 
-        TextChannel targetChannel = Manager.getInstance().getTextChannelFromChannelName(event.getChannel());
+        TextChannel targetChannel = DiscordSRV.getInstance().getTextChannelFromChannelName(event.getChannel());
         discordMessage = DiscordUtil.convertMentionsFromNames(discordMessage, targetChannel.getGuild());
 
-        if (event.getChannel() == null) DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), discordMessage);
+        if (event.getChannel() == null) DiscordUtil.sendMessage(DiscordSRV.getInstance().getMainChatChannel(), discordMessage);
         else DiscordUtil.sendMessage(targetChannel, discordMessage);
 
     }
@@ -109,9 +109,9 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
     @Override
     public void onGamePlayerDeath(GamePlayerDeathEvent event) {
         // return if death messages are disabled
-        if (!Manager.getInstance().getConfig().getBoolean("MinecraftPlayerDeathMessageEnabled")) return;
+        if (!DiscordSRV.getInstance().getConfig().getBoolean("MinecraftPlayerDeathMessageEnabled")) return;
 
-        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), DiscordUtil.stripColor(Manager.getInstance().getConfig().getString("MinecraftPlayerDeathMessageFormat")
+        DiscordUtil.sendMessage(DiscordSRV.getInstance().getMainChatChannel(), DiscordUtil.stripColor(DiscordSRV.getInstance().getConfig().getString("MinecraftPlayerDeathMessageFormat")
                 .replace("%username%", event.getPlayer())
                 .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(PlayerUtil.getDisplayName(event.getPlayer()))))
                 .replace("%world%", event.getWorld())
@@ -122,16 +122,16 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
     @Override
     public void onGamePlayerJoin(GamePlayerJoinEvent event) {
         // If player is OP & update is available tell them
-        if ((PlayerUtil.isOp(event.getPlayer()) || PlayerUtil.hasPermission(event.getPlayer(), "discordsrv.admin")) && Manager.getInstance().getUpdateManager().isUpdateAvailable()) {
+        if ((PlayerUtil.isOp(event.getPlayer()) || PlayerUtil.hasPermission(event.getPlayer(), "discordsrv.admin")) && DiscordSRV.getInstance().getUpdateManager().isUpdateAvailable()) {
             PlayerUtil.sendMessage(event.getPlayer(), ChatColor.AQUA + "An update to DiscordSRV is available. Download it at http://dev.bukkit.org/bukkit-plugins/discordsrv/");
         }
 
         // make sure join messages enabled
-        if (!Manager.getInstance().getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) return;
+        if (!DiscordSRV.getInstance().getConfig().getBoolean("MinecraftPlayerJoinMessageEnabled")) return;
 
         // user shouldn't have a quit message from permission
         if (PlayerUtil.hasPermission(event.getPlayer(), "discordsrv.silentjoin")) {
-            Manager.getInstance().getPlatform().info("Player " + event.getPlayer() + " joined with silent joining permission, not sending a join message");
+            DiscordSRV.getInstance().getPlatform().info("Player " + event.getPlayer() + " joined with silent joining permission, not sending a join message");
             return;
         }
 
@@ -139,7 +139,7 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
         playerStatusIsOnline.put(event.getPlayer(), true);
 
         // player doesn't have silent join permission, send join message
-        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerJoinMessageFormat")
+        DiscordUtil.sendMessage(DiscordSRV.getInstance().getMainChatChannel(), DiscordSRV.getInstance().getConfig().getString("MinecraftPlayerJoinMessageFormat")
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer()))
                 .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(PlayerUtil.getDisplayName(event.getPlayer()))))
         );
@@ -148,11 +148,11 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
     @Override
     public void onGamePlayerQuit(GamePlayerQuitEvent event) {
         // Make sure quit messages enabled
-        if (!Manager.getInstance().getConfig().getBoolean("MinecraftPlayerLeaveMessageEnabled")) return;
+        if (!DiscordSRV.getInstance().getConfig().getBoolean("MinecraftPlayerLeaveMessageEnabled")) return;
 
         // No quit message, user shouldn't have one from permission
         if (PlayerUtil.hasPermission(event.getPlayer(), "discordsrv.silentjoin")) {
-            Manager.getInstance().getPlatform().info("Player " + event.getPlayer() + " quit with silent quiting permission, not sending a quit message");
+            DiscordSRV.getInstance().getPlatform().info("Player " + event.getPlayer() + " quit with silent quiting permission, not sending a quit message");
             return;
         }
 
@@ -160,7 +160,7 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
         playerStatusIsOnline.remove(event.getPlayer());
 
         // Player doesn't have silent quit, show quit message
-        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), Manager.getInstance().getConfig().getString("MinecraftPlayerLeaveMessageFormat")
+        DiscordUtil.sendMessage(DiscordSRV.getInstance().getMainChatChannel(), DiscordSRV.getInstance().getConfig().getString("MinecraftPlayerLeaveMessageFormat")
                 .replace("%username%", DiscordUtil.escapeMarkdown(event.getPlayer()))
                 .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(PlayerUtil.getDisplayName(event.getPlayer()))))
         );
@@ -169,9 +169,9 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
     @Override
     public void onGamePlayerAchievementRewarded(GamePlayerAchievementRewardedEvent event) {
         // return if achievement messages are disabled
-        if (!Manager.getInstance().getConfig().getBoolean("MinecraftPlayerAchievementMessagesEnabled")) return;
+        if (!DiscordSRV.getInstance().getConfig().getBoolean("MinecraftPlayerAchievementMessagesEnabled")) return;
 
-        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), DiscordUtil.stripColor(Manager.getInstance().getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
+        DiscordUtil.sendMessage(DiscordSRV.getInstance().getMainChatChannel(), DiscordUtil.stripColor(DiscordSRV.getInstance().getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
                 .replace("%username%", event.getPlayer())
                 .replace("%displayname%", DiscordUtil.stripColor(DiscordUtil.escapeMarkdown(PlayerUtil.getDisplayName(event.getPlayer()))))
                 .replace("%world%", event.getWorld())

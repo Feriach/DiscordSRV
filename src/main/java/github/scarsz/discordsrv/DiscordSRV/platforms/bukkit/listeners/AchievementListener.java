@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GamePlayerAchievementRewardedEvent;
 import github.scarsz.discordsrv.DiscordSRV.util.DiscordUtil;
 import org.bukkit.ChatColor;
@@ -24,7 +24,7 @@ public class AchievementListener implements Listener {
     @EventHandler
     public void PlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event) {
         // return if achievement messages are disabled
-        if (!Manager.getInstance().getConfig().getBoolean("MinecraftPlayerAchievementMessagesEnabled")) return;
+        if (!DiscordSRV.getInstance().getConfig().getBoolean("MinecraftPlayerAchievementMessagesEnabled")) return;
 
         // return if achievement or player objects are fucking knackered
         if (event == null || event.getAchievement() == null || event.getPlayer() == null) return;
@@ -34,7 +34,7 @@ public class AchievementListener implements Listener {
         for (String s : event.getAchievement().toString().toLowerCase().split("_")) achievementNameParts.add(s.substring(0, 1).toUpperCase() + s.substring(1));
         String achievementName = String.join(" ", achievementNameParts);
 
-        DiscordUtil.sendMessage(Manager.getInstance().getMainChatChannel(), ChatColor.stripColor(Manager.getInstance().getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
+        DiscordUtil.sendMessage(DiscordSRV.getInstance().getMainChatChannel(), ChatColor.stripColor(DiscordSRV.getInstance().getConfig().getString("MinecraftPlayerAchievementMessagesFormat")
                 .replace("%username%", event.getPlayer().getName())
                 .replace("%displayname%", event.getPlayer().getDisplayName())
                 .replace("%world%", event.getPlayer().getWorld().getName())
@@ -44,7 +44,7 @@ public class AchievementListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event) {
-        Manager.getInstance().processEvent(GamePlayerAchievementRewardedEvent.fromEvent(event));
+        DiscordSRV.getInstance().processEvent(GamePlayerAchievementRewardedEvent.fromEvent(event));
     }
 
 }
