@@ -24,7 +24,7 @@ import org.spongepowered.api.text.format.TextStyles;
 @Plugin(
         id = "discordsrv",
         name = "DiscordSRV",
-        version = "1",
+        version = "13.0",
         description = "The most powerful, configurable, open-source Discord bridge plugin out there.",
         url = "https://github.com/Scarsz/DiscordSRV",
         authors = { "Scarsz", "Androkai" }
