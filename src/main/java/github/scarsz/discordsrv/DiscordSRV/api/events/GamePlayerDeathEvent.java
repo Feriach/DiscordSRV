@@ -45,8 +45,6 @@ public class GamePlayerDeathEvent extends GamePlayerEvent {
                 case SPONGE:
                     //TODO
                     break;
-                default:
-                    return null;
             }
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
