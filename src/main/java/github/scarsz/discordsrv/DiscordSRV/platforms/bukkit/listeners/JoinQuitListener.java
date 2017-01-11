@@ -4,6 +4,7 @@ import github.scarsz.discordsrv.DiscordSRV.DiscordSRV;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GamePlayerJoinEvent;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GamePlayerQuitEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -17,12 +18,12 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class JoinQuitListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerJoinEvent(PlayerJoinEvent event) {
         DiscordSRV.getInstance().processEvent(GamePlayerJoinEvent.fromEvent(event));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerQuitEvent(PlayerQuitEvent event) {
         DiscordSRV.getInstance().processEvent(GamePlayerQuitEvent.fromEvent(event));
     }

@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class AchievementListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void PlayerAchievementAwardedEvent(PlayerAchievementAwardedEvent event) {
         // return if achievement messages are disabled
         if (!DiscordSRV.getInstance().getConfig().getBoolean("MinecraftPlayerAchievementMessagesEnabled")) return;
