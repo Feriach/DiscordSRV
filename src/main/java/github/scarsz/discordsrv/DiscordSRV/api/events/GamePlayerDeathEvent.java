@@ -17,13 +17,15 @@ public class GamePlayerDeathEvent extends GamePlayerEvent {
     @Getter private final String message;
     @Getter private final String world;
 
-    public GamePlayerDeathEvent(String playerName, String message, String world) {
+    public GamePlayerDeathEvent(boolean canceled, String playerName, String message, String world) {
         super(playerName);
+        setCanceled(canceled);
         this.message = message;
         this.world = world;
     }
 
     public static GamePlayerDeathEvent fromEvent(Object event) {
+        boolean canceled = false;
         String playerName = null;
         String message = null;
         String world = null;
@@ -31,6 +33,8 @@ public class GamePlayerDeathEvent extends GamePlayerEvent {
         try {
             switch (DiscordSRV.getInstance().getPlatformType()) {
                 case BUKKIT:
+                    canceled = (boolean) event.getClass().getMethod("isCancelled").invoke(event, null);
+
                     Object player = event.getClass().getMethod("getEntity").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);
 
@@ -49,7 +53,7 @@ public class GamePlayerDeathEvent extends GamePlayerEvent {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return new GamePlayerDeathEvent(playerName, message, world);
+        return new GamePlayerDeathEvent(canceled, playerName, message, world);
     }
 
 }

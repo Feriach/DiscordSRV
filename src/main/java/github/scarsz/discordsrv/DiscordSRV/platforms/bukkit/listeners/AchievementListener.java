@@ -42,7 +42,7 @@ public class AchievementListener implements Listener {
         ));
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerAchievementAwarded(PlayerAchievementAwardedEvent event) {
         DiscordSRV.getInstance().processEvent(GamePlayerAchievementRewardedEvent.fromEvent(event));
     }

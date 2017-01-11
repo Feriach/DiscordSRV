@@ -18,14 +18,16 @@ public class GameChatMessageEvent extends GamePlayerEvent {
     @Getter private final String channel;
     @Getter private final String world;
 
-    public GameChatMessageEvent(String playerName, String message, String channel, String world) {
+    public GameChatMessageEvent(boolean canceled, String playerName, String message, String channel, String world) {
         super(playerName);
+        setCanceled(canceled);
         this.message = message;
         this.channel = channel;
         this.world = world;
     }
 
     public static GameChatMessageEvent fromEvent(Object event, String channel) {
+        boolean canceled = false;
         String playerName = null;
         String message = null;
         String world = null;
@@ -33,6 +35,8 @@ public class GameChatMessageEvent extends GamePlayerEvent {
         try {
             switch (DiscordSRV.getInstance().getPlatformType()) {
                 case BUKKIT:
+                    canceled = (boolean) event.getClass().getMethod("isCancelled").invoke(event, null);
+
                     Object player = event.getClass().getMethod("getPlayer").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);
 
@@ -53,7 +57,7 @@ public class GameChatMessageEvent extends GamePlayerEvent {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return new GameChatMessageEvent(playerName, message, channel, world);
+        return new GameChatMessageEvent(canceled, playerName, message, channel, world);
     }
 
 }

@@ -18,13 +18,15 @@ public class GamePlayerQuitEvent extends GamePlayerEvent {
     @Getter private final String message;
     @Getter private final String world;
 
-    public GamePlayerQuitEvent(String playerName, String message, String world) {
+    public GamePlayerQuitEvent(boolean canceled, String playerName, String message, String world) {
         super(playerName);
+        setCanceled(canceled);
         this.message = message;
         this.world = world;
     }
 
     public static GamePlayerQuitEvent fromEvent(Object event) {
+        boolean canceled = false;
         String playerName = null;
         String message = null;
         String world = null;
@@ -32,6 +34,8 @@ public class GamePlayerQuitEvent extends GamePlayerEvent {
         try {
             switch (DiscordSRV.getInstance().getPlatformType()) {
                 case BUKKIT:
+                    canceled = (boolean) event.getClass().getMethod("isCancelled").invoke(event, null);
+
                     Object player = event.getClass().getMethod("getPlayer").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);
 
@@ -52,7 +56,7 @@ public class GamePlayerQuitEvent extends GamePlayerEvent {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return new GamePlayerQuitEvent(playerName, message, world);
+        return new GamePlayerQuitEvent(canceled, playerName, message, world);
     }
 
 }

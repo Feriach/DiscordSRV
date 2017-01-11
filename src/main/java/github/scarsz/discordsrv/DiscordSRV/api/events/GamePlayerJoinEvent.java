@@ -17,13 +17,15 @@ public class GamePlayerJoinEvent extends GamePlayerEvent {
     @Getter private final String message;
     @Getter private final String world;
 
-    public GamePlayerJoinEvent(String playerName, String message, String world) {
+    public GamePlayerJoinEvent(boolean canceled, String playerName, String message, String world) {
         super(playerName);
+        setCanceled(canceled);
         this.message = message;
         this.world = world;
     }
 
     public static GamePlayerJoinEvent fromEvent(Object event) {
+        boolean canceled = false;
         String playerName = null;
         String message = null;
         String world = null;
@@ -31,6 +33,8 @@ public class GamePlayerJoinEvent extends GamePlayerEvent {
         try {
             switch (DiscordSRV.getInstance().getPlatformType()) {
                 case BUKKIT:
+                    canceled = (boolean) event.getClass().getMethod("isCancelled").invoke(event, null);
+
                     Object player = event.getClass().getMethod("getEntity").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);
 
@@ -51,7 +55,7 @@ public class GamePlayerJoinEvent extends GamePlayerEvent {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return new GamePlayerJoinEvent(playerName, message, world);
+        return new GamePlayerJoinEvent(canceled, playerName, message, world);
     }
 
 }

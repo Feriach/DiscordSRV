@@ -20,20 +20,24 @@ public class GamePlayerAchievementRewardedEvent extends GamePlayerEvent {
     @Getter private final String achievement;
     @Getter private final String world;
 
-    public GamePlayerAchievementRewardedEvent(String achievement, String playerName, String world) {
+    public GamePlayerAchievementRewardedEvent(boolean canceled, String achievement, String playerName, String world) {
         super(playerName);
+        setCanceled(canceled);
         this.achievement = achievement;
         this.world = world;
     }
 
     public static GamePlayerAchievementRewardedEvent fromEvent(Object event) {
         String achievement = null;
+        boolean canceled = false;
         String playerName = null;
         String world = null;
 
         try {
             switch (DiscordSRV.getInstance().getPlatformType()) {
                 case BUKKIT:
+                    canceled = (boolean) event.getClass().getMethod("isCancelled").invoke(event, null);
+
                     Object player = event.getClass().getMethod("getEntity").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);
 
@@ -60,7 +64,7 @@ public class GamePlayerAchievementRewardedEvent extends GamePlayerEvent {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return new GamePlayerAchievementRewardedEvent(playerName, world, achievement);
+        return new GamePlayerAchievementRewardedEvent(canceled, playerName, world, achievement);
     }
 
 }

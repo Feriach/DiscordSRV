@@ -16,7 +16,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
  */
 public class DeathListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerDeath(PlayerDeathEvent event) {
         DiscordSRV.getInstance().processEvent(GamePlayerDeathEvent.fromEvent(event));
     }
