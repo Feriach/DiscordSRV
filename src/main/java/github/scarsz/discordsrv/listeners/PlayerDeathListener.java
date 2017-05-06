@@ -39,7 +39,7 @@ public class PlayerDeathListener implements Listener {
                 .replace("%deathmessage%", DiscordUtil.escapeMarkdown(event.getDeathMessage()));
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getEntity(), discordMessage);
 
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannels(), DiscordUtil.stripColor(discordMessage));
     }
 
 }

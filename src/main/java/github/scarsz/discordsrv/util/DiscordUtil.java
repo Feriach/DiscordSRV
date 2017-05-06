@@ -122,6 +122,14 @@ public class DiscordUtil {
         sendMessage(channel, message, 0, true);
     }
     /**
+     * Send the given String message to the given TextChannel
+     * @param channels Channels to send the message to
+     * @param message Message to send to the channels
+     */
+    public static void sendMessage(List<TextChannel> channels, String message) {
+        channels.forEach(textChannel -> sendMessage(textChannel, message));
+    }
+    /**
      * Send the given String message to the given TextChannel that will expire in x milliseconds
      * @param channel the TextChannel to send the message to
      * @param message the message to send to the TextChannel
@@ -219,6 +227,14 @@ public class DiscordUtil {
         message = translateEmotes(message, channel.getGuild());
 
         return sendMessageBlocking(channel, new MessageBuilder().append(message).build());
+    }
+    /**
+     * Send the given message to the given channels, blocking the thread's execution until it's successfully sent then returning it
+     * @param channel The channels to send the message to
+     * @param message The message to send to the channels
+     */
+    public static void sendMessageBlocking(List<TextChannel> channel, String message) {
+        channel.forEach(textChannel -> sendMessageBlocking(channel, message));
     }
     /**
      * Send the given message to the given channel, blocking the thread's execution until it's successfully sent then returning it

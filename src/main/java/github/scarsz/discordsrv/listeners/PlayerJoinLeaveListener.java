@@ -59,7 +59,7 @@ public class PlayerJoinLeaveListener implements Listener {
             if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
             // Player doesn't have silent join permission, send join message
-            DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
+            DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannels(), DiscordUtil.stripColor(discordMessage));
         }, 20);
 
         // if enabled, set the player's discord nickname as their ign
@@ -90,7 +90,7 @@ public class PlayerJoinLeaveListener implements Listener {
         if (PluginUtil.pluginHookIsEnabled("placeholderapi")) discordMessage = me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(event.getPlayer(), discordMessage);
 
         // Player doesn't have silent quit, show quit message
-        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), DiscordUtil.stripColor(discordMessage));
+        DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannels(), DiscordUtil.stripColor(discordMessage));
     }
 
 }

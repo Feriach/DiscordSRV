@@ -31,7 +31,7 @@ public class ChannelTopicUpdater extends Thread {
                 String consoleTopic = applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC.toString());
 
                 // interrupt if both text channels are unavailable
-                if (DiscordSRV.getPlugin().getMainTextChannel() == null && DiscordSRV.getPlugin().getConsoleChannel() == null) {
+                if (DiscordSRV.getPlugin().getMainTextChannels() == null && DiscordSRV.getPlugin().getConsoleChannel() == null) {
                     DiscordSRV.debug("Broke from Channel Topic Updater thread: chat channel and console channel were both null");
                     return;
                 }
@@ -42,7 +42,7 @@ public class ChannelTopicUpdater extends Thread {
                 }
 
                 if (DiscordUtil.getJda() != null && DiscordUtil.getJda().getSelfUser() != null) {
-                    if (!chatTopic.isEmpty()) DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getMainTextChannel(), chatTopic);
+                    if (!chatTopic.isEmpty() && DiscordSRV.getPlugin().getMainTextChannels() != null) DiscordSRV.getPlugin().getMainTextChannels().forEach(textChannel -> DiscordUtil.setTextChannelTopic(textChannel, chatTopic));
                     if (!consoleTopic.isEmpty()) DiscordUtil.setTextChannelTopic(DiscordSRV.getPlugin().getConsoleChannel(), consoleTopic);
                 }
             } catch (NullPointerException ignored) {}

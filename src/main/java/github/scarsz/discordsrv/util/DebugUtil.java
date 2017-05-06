@@ -119,14 +119,18 @@ public class DebugUtil {
 
     private static String getChannelPermissions() {
         List<String> output = new LinkedList<>();
-        DiscordSRV.getPlugin().getChannels().forEach((ingameChannelName, textChannel) -> {
-            if (textChannel != null) {
-                List<String> outputForChannel = new LinkedList<>();
-                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_READ)) outputForChannel.add("read");
-                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_WRITE)) outputForChannel.add("write");
-                if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_CHANNEL)) outputForChannel.add("channel-manage");
-                if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MANAGE)) outputForChannel.add("message-manage");
-                output.add(textChannel + " (<- " + ingameChannelName + "): " + String.join(", ", outputForChannel));
+        DiscordSRV.getPlugin().getChannels().forEach((ingameChannelName, textChannels) -> {
+            if (textChannels != null) {
+                List<String> outputForPair = new LinkedList<>();
+                textChannels.forEach(textChannel -> {
+                    List<String> outputForChannel = new LinkedList<String>() {{ add(textChannel.toString()); }};
+                    if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_READ)) outputForChannel.add("read");
+                    if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_WRITE)) outputForChannel.add("write");
+                    if (DiscordUtil.checkPermission(textChannel, Permission.MANAGE_CHANNEL)) outputForChannel.add("channel-manage");
+                    if (DiscordUtil.checkPermission(textChannel, Permission.MESSAGE_MANAGE)) outputForChannel.add("message-manage");
+                    outputForPair.add(outputForChannel.toString());
+                });
+                output.add(textChannels + " (<- " + ingameChannelName + "): " + String.join(", ", outputForPair));
             }
         });
         return String.join("\n", output);

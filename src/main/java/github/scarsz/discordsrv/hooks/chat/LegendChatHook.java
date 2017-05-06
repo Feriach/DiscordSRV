@@ -29,7 +29,7 @@ public class LegendChatHook implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(ChatMessageEvent event) {
         // make sure chat channel is registered with a destination
-        if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel().getName()) == null) return;
+        if (DiscordSRV.getPlugin().getDestinationTextChannelsForGameChannelName(event.getChannel().getName()) == null) return;
 
         // make sure message isn't just blank
         if (StringUtils.isBlank(event.getMessage())) return;

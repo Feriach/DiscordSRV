@@ -6,8 +6,8 @@ import github.scarsz.discordsrv.api.ApiManager;
 import github.scarsz.discordsrv.api.events.DiscordGuildMessagePostBroadcastEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
-import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.VaultHook;
+import github.scarsz.discordsrv.hooks.chat.*;
 import github.scarsz.discordsrv.hooks.world.MultiverseCoreHook;
 import github.scarsz.discordsrv.listeners.*;
 import github.scarsz.discordsrv.objects.*;
@@ -24,6 +24,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.ISnowflake;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
@@ -59,7 +60,7 @@ public class DiscordSRV extends JavaPlugin implements Listener {
 
     @Getter private AccountLinkManager accountLinkManager;
     @Getter private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = null;
-    @Getter private Map<String, TextChannel> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
+    @Getter private Map<String, List<TextChannel>> channels = new LinkedHashMap<>(); // <in-game channel name, discord channel>
     @Getter private ChannelTopicUpdater channelTopicUpdater;
     @Getter private Map<String, String> colors = new HashMap<>();
     @Getter private CommandManager commandManager = new CommandManager();
@@ -84,42 +85,42 @@ public class DiscordSRV extends JavaPlugin implements Listener {
     public static DiscordSRV getPlugin() {
         return getPlugin(DiscordSRV.class);
     }
-    public Map.Entry<String, TextChannel> getMainChatChannelPair() {
+    public Map.Entry<String, List<TextChannel>> getMainChatChannelPair() {
         return channels.size() != 0 ? channels.entrySet().iterator().next() : null;
     }
     public String getMainChatChannel() {
-        Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
+        Map.Entry<String, List<TextChannel>> pair = getMainChatChannelPair();
         return pair != null ? pair.getKey() : "";
     }
-    public TextChannel getMainTextChannel() {
-        Map.Entry<String, TextChannel> pair = getMainChatChannelPair();
+    public List<TextChannel> getMainTextChannels() {
+        Map.Entry<String, List<TextChannel>> pair = getMainChatChannelPair();
         return pair != null ? pair.getValue() : null;
     }
     public Guild getMainGuild() {
-        return getMainTextChannel() != null
-                ? getMainTextChannel().getGuild()
+        return getMainTextChannels() != null
+                ? getMainTextChannels().get(0).getGuild()
                 : consoleChannel != null
                     ? consoleChannel.getGuild()
                     : jda.getGuilds().size() > 0
                         ? jda.getGuilds().get(0)
                         : null;
     }
-    public TextChannel getDestinationTextChannelForGameChannelName(String gameChannelName) {
-        TextChannel foundChannel = channels.get(gameChannelName);
-        if (foundChannel != null) return foundChannel; // found case-sensitive channel
+    public List<TextChannel> getDestinationTextChannelsForGameChannelName(String gameChannelName) {
+        List<TextChannel> foundChannels = channels.get(gameChannelName);
+        if (foundChannels != null) return foundChannels; // found case-sensitive channel
 
         // no case-sensitive channel found, try case in-sensitive
-        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet())
+        for (Map.Entry<String, List<TextChannel>> channelEntry : channels.entrySet())
             if (channelEntry.getKey().equalsIgnoreCase(gameChannelName)) return channelEntry.getValue();
 
         return null; // no channel found, case-insensitive or not
     }
     public String getDestinationGameChannelNameForTextChannel(TextChannel source) {
-        for (Map.Entry<String, TextChannel> channelEntry : channels.entrySet()) {
+        for (Map.Entry<String, List<TextChannel>> channelEntry : channels.entrySet()) {
             if (channelEntry == null) continue;
             if (channelEntry.getKey() == null) continue;
             if (channelEntry.getValue() == null) continue;
-            if (channelEntry.getValue().getId().equals(source.getId())) return channelEntry.getKey();
+            if (channelEntry.getValue().stream().map(ISnowflake::getId).anyMatch(s -> s.contains(source.getId()))) return channelEntry.getKey();
         }
         return null;
     }
@@ -327,17 +328,31 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         }
 
         // load channels
-        for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet())
-            channels.put(channelEntry.getKey(), jda.getTextChannelById((String) channelEntry.getValue()));
+        for (Map.Entry<String, Object> channelEntry : ((MemorySection) getConfig().get("Channels")).getValues(true).entrySet()) {
+            List<TextChannel> c = new LinkedList<TextChannel>() {{
+                String[] valueSplit = ((String) channelEntry.getValue()).split(",");
+                if (valueSplit.length > 0) {
+                    for (String s : valueSplit) {
+                        add(jda.getTextChannelById(s));
+                    }
+                }
+            }};
+
+            if (c.size() > 0) {
+                channels.put(channelEntry.getKey(), c);
+            } else {
+                channels.put(channelEntry.getKey(), null);
+            }
+        }
 
         // warn if no channels have been linked
-        if (getMainTextChannel() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
-        if (getMainTextChannel() == null && consoleChannel == null) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
+        if (getMainTextChannels() == null) DiscordSRV.warning(LangUtil.InternalMessage.NO_CHANNELS_LINKED);
+        if (getMainTextChannels() == null && consoleChannel == null) DiscordSRV.error(LangUtil.InternalMessage.NO_CHANNELS_LINKED_NOR_CONSOLE);
         // warn if the console channel is connected to a chat channel
-        if (getMainTextChannel() != null && consoleChannel != null && getMainTextChannel().getId().equals(consoleChannel.getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
+        if (getMainTextChannels() != null && consoleChannel != null && getMainTextChannels().get(0).getId().equals(consoleChannel.getId())) DiscordSRV.warning(LangUtil.InternalMessage.CONSOLE_CHANNEL_ASSIGNED_TO_LINKED_CHANNEL);
 
         // send server startup message
-        DiscordUtil.sendMessage(getMainTextChannel(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString());
+        DiscordUtil.sendMessage(getMainTextChannels(), LangUtil.Message.SERVER_STARTUP_MESSAGE.toString());
 
         // start channel topic updater
         if (serverWatchdog != null) {
@@ -472,11 +487,11 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         long shutdownStartTime = System.currentTimeMillis();
 
         // send server shutdown message
-        DiscordUtil.sendMessageBlocking(getMainTextChannel(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
+        if (getMainTextChannels() != null) DiscordUtil.sendMessageBlocking(getMainTextChannels(), LangUtil.Message.SERVER_SHUTDOWN_MESSAGE.toString());
 
         // set server shutdown topics if enabled
         if (getConfig().getBoolean("ChannelTopicUpdaterChannelTopicsAtShutdownEnabled")) {
-            DiscordUtil.setTextChannelTopic(getMainTextChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
+            DiscordSRV.getPlugin().getMainTextChannels().forEach(textChannel -> DiscordUtil.setTextChannelTopic(textChannel, ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CHAT_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString())));
             DiscordUtil.setTextChannelTopic(getConsoleChannel(), ChannelTopicUpdater.applyPlaceholders(LangUtil.Message.CONSOLE_CHANNEL_TOPIC_AT_SERVER_SHUTDOWN.toString()));
         }
 
@@ -608,8 +623,8 @@ public class DiscordSRV extends JavaPlugin implements Listener {
         channel = postEvent.getChannel(); // update channel from event in case any listeners modified it
         discordMessage = postEvent.getProcessedMessage(); // update message from event in case any listeners modified it
 
-        if (channel == null) DiscordUtil.sendMessage(getMainTextChannel(), discordMessage);
-        else DiscordUtil.sendMessage(getDestinationTextChannelForGameChannelName(channel), discordMessage);
+        if (channel == null) DiscordUtil.sendMessage(getMainTextChannels(), discordMessage);
+        else DiscordUtil.sendMessage(getDestinationTextChannelsForGameChannelName(channel), discordMessage);
     }
 
     public void broadcastMessageToMinecraftServer(String channel, String message) {

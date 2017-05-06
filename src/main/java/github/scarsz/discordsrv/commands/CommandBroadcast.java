@@ -24,7 +24,7 @@ public class CommandBroadcast {
         if (args.length == 0) {
             sender.sendMessage(ChatColor.RED + LangUtil.InternalMessage.NO_MESSAGE_GIVEN_TO_BROADCAST.toString());
         } else {
-            DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannel(), String.join(" ", args));
+            DiscordUtil.sendMessage(DiscordSRV.getPlugin().getMainTextChannels(), String.join(" ", args));
         }
     }
 

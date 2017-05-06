@@ -53,7 +53,7 @@ public class TownyChatHook implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(AsyncChatHookEvent event) {
         // make sure chat channel is registered with a destination
-        if (DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(event.getChannel().getName()) == null) return;
+        if (DiscordSRV.getPlugin().getDestinationTextChannelsForGameChannelName(event.getChannel().getName()) == null) return;
 
         // make sure message isn't blank
         if (StringUtils.isBlank(event.getMessage())) return;
