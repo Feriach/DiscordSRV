@@ -1,5 +1,8 @@
 package github.scarsz.discordsrv.util;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import github.scarsz.discordsrv.DiscordSRV;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -24,6 +27,26 @@ public class HttpUtil {
         } catch (IOException e) {
             DiscordSRV.error(LangUtil.InternalMessage.HTTP_FAILED_TO_FETCH_URL + " " + requestUrl + ": " + e.getMessage());
             return "";
+        }
+    }
+
+    public static boolean executeChatWebhook(String username, String message) {
+        try {
+            while (1 < 2) { // polaris
+                HttpResponse<String> response = Unirest.post(DiscordSRV.getPlugin().getConfig().getString("DiscordMainChatChannelWebhookUrl"))
+                        .field("username", username)
+                        .field("avatar_url", "https://crafatar.com/avatars/" + username + "?size=100")
+                        .field("content", message)
+                        .asString();
+                if (response.getHeaders().containsKey("Retry-After")) {
+                    Thread.sleep(Integer.parseInt(response.getHeaders().get("Retry-After").get(0)));
+                    return executeChatWebhook(username, message);
+                }
+                return true;
+            }
+        } catch (InterruptedException | UnirestException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

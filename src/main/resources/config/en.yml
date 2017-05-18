@@ -75,6 +75,23 @@ DiscordChatChannelColorTranslations: {
   "546E7A": "&8"
 }
 
+# MC -> Discord main chat channel delivery webhook
+# This is an *extremely* experimental option to enable sending main-chat-channel, Minecraft sourced messages
+# as webhooks. If you do not set up your webhook options right, this will result in frankly stupid behavior.
+# Don't use it if you don't know what you're doing or you have more than one channel linked.
+#
+# Due to limitations with how webhooks are configured, this will (probably) never support multiple channels because
+# we (DiscordSRV) can only /execute/ the webhook. We can't set the destination channel of it. Because of this, webhook
+# messages are restricted to only being used for messages going to the main chat channel so that you can configure
+# your webhook's target to be your main chat channel.
+#
+# Also, note, webhook messages are currently broken on the Android app where it will show as one single user sending every
+# message instead of the avatar/name changing depending on the author.
+#
+# Once again, don't use this if you don't know what you're doing.
+#
+DiscordMainChatChannelWebhookUrl: ""
+
 # Console channel information
 # The console channel is the text channel that receives messages which are then run as server commands
 # by the console as well as having the server's console being streamed to line by line
