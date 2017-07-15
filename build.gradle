@@ -1,0 +1,40 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    group = project.pluginGroup
+    version = project.pluginVersion
+
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://dl.bintray.com/scarsz/maven/' }
+        maven { url 'https://raw.githubusercontent.com/Scarsz/Maven/master/' }
+    }
+
+    dependencies {
+        compile "com.github.DV8FromTheWorld:JDA:0cbc6878"
+        compile "com.google.code.gson:gson:2.4"
+        compile "com.mashape.unirest:unirest-java:1.4.9"
+        compile "commons-io:commons-io:LATEST"
+        compile "commons-collections:commons-collections:LATEST"
+        compile "org.apache.commons:commons-lang3:LATEST"
+
+        compileOnly "org.apache.logging.log4j:log4j-core:2.1"
+    }
+}

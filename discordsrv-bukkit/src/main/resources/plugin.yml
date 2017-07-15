@@ -1,0 +1,6 @@
+name: Discordsrv
+version: @version@
+main: DiscordsrvBukkit
+authors: [Scarsz, Androkai]
+description: The most powerful, configurable, widely loved, open-source Discord bridge plugin out there.
+website: https://github.com/Scarsz/DiscordSRV

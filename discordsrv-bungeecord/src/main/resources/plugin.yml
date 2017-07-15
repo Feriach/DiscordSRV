@@ -1,0 +1,4 @@
+name: Discordsrv
+version: @version@
+main: DiscordSRVBungeeCord
+description: The most powerful, configurable, widely loved, open-source Discord bridge plugin out there.
